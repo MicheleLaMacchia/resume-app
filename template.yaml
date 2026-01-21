@@ -1,0 +1,38 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  Cloud Resume API - Michele La Macchia.
+  Esposizione del CV tramite Lambda Function URL (Free Tier).
+
+Resources:
+  ResumeFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      # Configurazione per immagine Docker
+      PackageType: Image
+      Architectures:
+        - x86_64
+      # Memoria minima per restare nel free tier e gestire la JVM
+      MemorySize: 512
+      Timeout: 15
+      # Abilitazione dell'URL pubblico (Function URL)
+      ImageConfig:
+        Command: [ "com.mlm.resume_app.StreamLambdaHandler::handleRequest" ]
+      FunctionUrlConfig:
+        AuthType: NONE # Accesso pubblico senza autenticazione IAM
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Path: /api/resume
+            Method: get
+
+    Metadata:
+      # Indica a SAM dove trovare il Dockerfile per la build
+      Dockerfile: Dockerfile
+      DockerContext: .
+
+Outputs:
+  ResumeFunctionUrl:
+    Description: "URL pubblico per accedere al CV"
+    Value: !GetAtt ResumeFunctionUrl.FunctionUrl

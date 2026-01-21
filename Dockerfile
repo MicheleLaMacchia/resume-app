@@ -1,28 +1,30 @@
 # --- STAGE 1: Build ---
-# Usiamo un'immagine Maven leggera con JDK 17 per compilare il progetto
+# Utilizziamo un'immagine Maven con JDK 17 per la compilazione
 FROM maven:3.9-eclipse-temurin-17-alpine AS build
 
-# Copiamo i file di configurazione delle dipendenze per sfruttare la cache di Docker
+# Copiamo i file del progetto [cite: 120]
 COPY pom.xml /app/
 COPY src /app/src/
-
-# Impostiamo la directory di lavoro e compiliamo il file .jar
 WORKDIR /app
+
+# Eseguiamo il package creando il Fat JAR di Spring Boot [cite: 146]
 RUN mvn clean package -DskipTests
 
 # --- STAGE 2: Runtime ---
-# Usiamo un'immagine JRE (Java Runtime Environment) minimale basata su Alpine Linux
-FROM eclipse-temurin:17-jre-alpine
+# Usiamo l'immagine ufficiale AWS per il runtime Java 17 di Lambda
+FROM public.ecr.aws/lambda/java:17
 
-# Creiamo una directory per l'applicazione
-WORKDIR /app
+# Impostiamo la directory di lavoro standard di Lambda
+WORKDIR ${LAMBDA_TASK_ROOT}
 
-# Copiamo solo il file JAR compilato dallo stage precedente
-# Il nome del jar dipende da quanto definito nel tuo pom.xml
-COPY --from=build /app/target/*.jar app.jar
+# Copiamo il JAR generato dallo stage di build
+# Nota: usa il nome esatto del tuo file JAR (senza .original) [cite: 110]
+COPY --from=build /app/target/resume-app-0.0.1-SNAPSHOT.jar app.jar
 
-# Esposizione della porta standard (Cloud Run usa la 8080 per default)
-EXPOSE 8080
+# ESTRAZIONE DEL JAR: Questo passaggio è fondamentale per evitare ClassNotFoundException.
+# Esplodiamo il JAR direttamente nella root del task in modo che le classi siano visibili.
+RUN jar -xf app.jar && rm app.jar
 
-# Comando di avvio con ottimizzazioni per container con poca memoria (Free Tier)
-ENTRYPOINT ["java", "-XX:+UseSerialGC", "-Xss512k", "-XX:MaxRAMPercentage=75", "-jar", "app.jar"]
+# Definiamo l'Handler: [PACKAGE].[CLASSE]::[METODO] [cite: 111, 118]
+# Assicurati che il package nel tuo codice Java sia esattamente com.mlm.resume_app
+CMD ["com.mlm.resume_app.StreamLambdaHandler::handleRequest"]

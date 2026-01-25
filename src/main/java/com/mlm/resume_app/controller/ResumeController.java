@@ -30,106 +30,112 @@ public class ResumeController {
         this.resumeService = resumeService;
     }
 
-    @GetMapping("/resume")
-    public ResumeModels getResume() {
-        logger.info("GET /api/resume");
-        return resumeService.getResume();
+    @GetMapping("/test")
+    public ResumeModels getTest() {
+        logger.info("GET /api/test");
+        return resumeService.getResumeByPk("AAAAAA00A00A000A");
     }
 
-    @GetMapping("/personal-data")
-    public DatiGenerali getPersonalData() {
-        logger.info("GET /api/personal-data");
-        return resumeService.getDatiGenerali();
+    @GetMapping("/resume/{pk}")
+    public ResumeModels getResume(@PathVariable("pk") String pk) {
+        logger.info("GET /api/resume/{}", pk);
+        return resumeService.getResumeByPk(pk);
     }
 
-    @GetMapping("/working-experience")
-    public List<EsperienzaLavorativa> getWorkingExperience() {
-        logger.info("GET /api/working-experience");
-        return resumeService.getEsperienze();
+    @GetMapping("/personal-data/{pk}")
+    public DatiGenerali getPersonalData(@PathVariable("pk") String pk) {
+        logger.info("GET /api/personal-data/{}", pk);
+        return resumeService.getDatiGeneraliByPk(pk);
     }
 
-    @GetMapping("/working-experience/{index}")
-    public ResponseEntity<EsperienzaLavorativa> getWorkingExperienceByIndex(@PathVariable("index") Integer index) {
-        logger.info("GET /api/working-experience/{}", index);
-        var item = resumeService.getEsperienzaByIndex(index);
+    @GetMapping("/working-experience/{pk}")
+    public List<EsperienzaLavorativa> getWorkingExperience(@PathVariable("pk") String pk) {
+        logger.info("GET /api/working-experience/{}", pk);
+        return resumeService.getEsperienzeByPk(pk);
+    }
+
+    @GetMapping("/working-experience/{pk}/{index}")
+    public ResponseEntity<EsperienzaLavorativa> getWorkingExperienceByIndex(@PathVariable("pk") String pk, @PathVariable("index") Integer index) {
+        logger.info("GET /api/working-experience/{}/{}", pk, index);
+        var item = resumeService.getEsperienzaByPkAndIndex(pk, index);
         return ResponseEntity.ok(item);
     }
 
-    @GetMapping("/education-training")
-    public List<IstruzioneFormazione> getEducationTraining() {
-        logger.info("GET /api/education-training");
-        return resumeService.getIstruzione();
+    @GetMapping("/education-training/{pk}")
+    public List<IstruzioneFormazione> getEducationTraining(@PathVariable("pk") String pk) {
+        logger.info("GET /api/education-training/{}", pk);
+        return resumeService.getIstruzioneByPk(pk);
     }
 
-    @GetMapping("/education-training/{index}")
-    public ResponseEntity<IstruzioneFormazione> getEducationTrainingByIndex(@PathVariable("index") Integer index) {
-        logger.info("GET /api/education-training/{}", index);
-        var item = resumeService.getIstruzioneByIndex(index);
+    @GetMapping("/education-training/{pk}/{index}")
+    public ResponseEntity<IstruzioneFormazione> getEducationTrainingByIndex(@PathVariable("pk") String pk, @PathVariable("index") Integer index) {
+        logger.info("GET /api/education-training/{}/{}", pk, index);
+        var item = resumeService.getIstruzioneByPkAndIndex(pk, index);
         return ResponseEntity.ok(item);
     }
 
-    @GetMapping("/language-skills")
-    public List<CompetenzaLinguistica> getLanguageSkills() {
-        logger.info("GET /api/language-skills");
-        return resumeService.getLingue();
+    @GetMapping("/language-skills/{pk}")
+    public List<CompetenzaLinguistica> getLanguageSkills(@PathVariable("pk") String pk) {
+        logger.info("GET /api/language-skills/{}", pk);
+        return resumeService.getLingueByPk(pk);
     }
 
-    @GetMapping("/language-skills/{index}")
-    public ResponseEntity<CompetenzaLinguistica> getLanguageSkillsByIndex(@PathVariable("index") Integer index) {
-        logger.info("GET /api/language-skills/{}", index);
-        var item = resumeService.getLinguaByIndex(index);
+    @GetMapping("/language-skills/{pk}/{index}")
+    public ResponseEntity<CompetenzaLinguistica> getLanguageSkillsByIndex(@PathVariable("pk") String pk, @PathVariable("index") Integer index) {
+        logger.info("GET /api/language-skills/{}/{}", pk, index);
+        var item = resumeService.getLinguaByPkAndIndex(pk, index);
         return ResponseEntity.ok(item);
     }
 
-    @GetMapping("/soft-skills")
-    public List<Competenza> getSoftSkills() {
-        logger.info("GET /api/soft-skills");
-        return resumeService.getTrasversali();
+    @GetMapping("/soft-skills/{pk}")
+    public List<Competenza> getSoftSkills(@PathVariable("pk") String pk) {
+        logger.info("GET /api/soft-skills/{}", pk);
+        return resumeService.getTrasversaliByPk(pk);
     }
 
-    @GetMapping("/soft-skills/{index}")
-    public ResponseEntity<Competenza> getSoftSkillsByIndex(@PathVariable("index") Integer index) {
-        logger.info("GET /api/soft-skills/{}", index);
-        var item = resumeService.getTrasversaleByIndex(index);
+    @GetMapping("/soft-skills/{pk}/{index}")
+    public ResponseEntity<Competenza> getSoftSkillsByIndex(@PathVariable("pk") String pk, @PathVariable("index") Integer index) {
+        logger.info("GET /api/soft-skills/{}/{}", pk, index);
+        var item = resumeService.getTrasversaleByPkAndIndex(pk, index);
         return ResponseEntity.ok(item);
     }
 
-    @GetMapping("/technical-skills")
-    public List<Competenza> getTechnicalSkills() {
-        logger.info("GET /api/technical-skills");
-        return resumeService.getTecnologiche();
+    @GetMapping("/technical-skills/{pk}")
+    public List<Competenza> getTechnicalSkills(@PathVariable("pk") String pk) {
+        logger.info("GET /api/technical-skills/{}", pk);
+        return resumeService.getTecnologicheByPk(pk);
     }
 
-    @GetMapping("/technical-skills/{index}")
-    public ResponseEntity<Competenza> getTechnicalSkillsByIndex(@PathVariable("index") Integer index) {
-        logger.info("GET /api/technical-skills/{}", index);
-        var item = resumeService.getTecnologicaByIndex(index);
+    @GetMapping("/technical-skills/{pk}/{index}")
+    public ResponseEntity<Competenza> getTechnicalSkillsByIndex(@PathVariable("pk") String pk, @PathVariable("index") Integer index) {
+        logger.info("GET /api/technical-skills/{}/{}", pk, index);
+        var item = resumeService.getTecnologicaByPkAndIndex(pk, index);
         return ResponseEntity.ok(item);
     }
 
-    @GetMapping("/organizational-skills")
-    public List<Competenza> getOrganizationalSkills() {
-        logger.info("GET /api/organizational-skills");
-        return resumeService.getOrganizzative();
+    @GetMapping("/organizational-skills/{pk}")
+    public List<Competenza> getOrganizationalSkills(@PathVariable("pk") String pk) {
+        logger.info("GET /api/organizational-skills/{}", pk);
+        return resumeService.getOrganizzativeByPk(pk);
     }
 
-    @GetMapping("/organizational-skills/{index}")
-    public ResponseEntity<Competenza> getOrganizationalSkillsByIndex(@PathVariable("index") Integer index) {
-        logger.info("GET /api/organizational-skills/{}", index);
-        var item = resumeService.getOrganizzativaByIndex(index);
+    @GetMapping("/organizational-skills/{pk}/{index}")
+    public ResponseEntity<Competenza> getOrganizationalSkillsByIndex(@PathVariable("pk") String pk, @PathVariable("index") Integer index) {
+        logger.info("GET /api/organizational-skills/{}/{}", pk, index);
+        var item = resumeService.getOrganizzativaByPkAndIndex(pk, index);
         return ResponseEntity.ok(item);
     }
 
-    @GetMapping("/functional-skills")
-    public List<Competenza> getFunctionalSkills() {
-        logger.info("GET /api/functional-skills");
-        return resumeService.getFunzionali();
+    @GetMapping("/functional-skills/{pk}")
+    public List<Competenza> getFunctionalSkills(@PathVariable("pk") String pk) {
+        logger.info("GET /api/functional-skills/{}", pk);
+        return resumeService.getFunzionaliByPk(pk);
     }
 
-    @GetMapping("/functional-skills/{index}")
-    public ResponseEntity<Competenza> getFunctionalSkillsByIndex(@PathVariable("index") Integer index) {
-        logger.info("GET /api/functional-skills/{}", index);
-        var item = resumeService.getFunzionaleByIndex(index);
+    @GetMapping("/functional-skills/{pk}/{index}")
+    public ResponseEntity<Competenza> getFunctionalSkillsByIndex(@PathVariable("pk") String pk, @PathVariable("index") Integer index) {
+        logger.info("GET /api/functional-skills/{}/{}", pk, index);
+        var item = resumeService.getFunzionaleByPkAndIndex(pk, index);
         return ResponseEntity.ok(item);
     }
 }

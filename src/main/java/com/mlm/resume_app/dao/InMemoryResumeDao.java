@@ -16,7 +16,21 @@ public class InMemoryResumeDao implements ResumeDao {
 
     @Override
     public ResumeModels loadResume() {
+        return loadSeed();
+    }
+
+    @Override
+    public ResumeModels loadResumeByPk(String pk) {
+        var seed = loadSeed();
+        if (seed != null && seed.datiGenerali() != null && seed.datiGenerali().codiceFiscale() != null && seed.datiGenerali().codiceFiscale().equals(pk)) {
+            return seed;
+        }
+        return null;
+    }
+
+    private ResumeModels loadSeed() {
         var datiGenerali = new DatiGenerali(
+            "AAAAAA00A00A000A",   // codiceFiscale
             "27/01/1991",          // dataDiNascita
             "Italia",              // paeseDiNascita
             "Roma",                // luogoDiNascita

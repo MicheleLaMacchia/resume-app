@@ -1,6 +1,7 @@
 package com.mlm.resume_app.model;
 
 public record DatiGenerali(
+	    String codiceFiscale,
 	    String dataDiNascita,
 	    String paeseDiNascita,
 	    String luogoDiNascita,

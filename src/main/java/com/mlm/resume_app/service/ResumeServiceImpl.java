@@ -33,6 +33,17 @@ public class ResumeServiceImpl implements ResumeService {
     }
 
     @Override
+    public ResumeModels getResumeByPk(String pk) {
+        logger.info("[START] getResumeByPk :: pk: {}", pk);
+        var rm = dao.loadResumeByPk(pk);
+        if (rm == null) {
+            logger.warn("Resume not found for pk: {}", pk);
+            throw new ResourceNotFoundException("Resume non trovato per pk: " + pk);
+        }
+        return rm;
+    }
+
+    @Override
     public DatiGenerali getDatiGenerali() {
         logger.info("[START] getDatiGenerali");
         return getResume().datiGenerali();
@@ -184,4 +195,199 @@ public class ResumeServiceImpl implements ResumeService {
         }
         return list.get(index);
     }
+
+    // New PK-based implementations
+    @Override
+    public DatiGenerali getDatiGeneraliByPk(String pk) {
+        logger.info("[START] getDatiGeneraliByPk, parametro: {}", pk);
+        var rm = dao.loadResumeByPk(pk);
+        if (rm == null) {
+            logger.warn("Resume not found for pk: {}", pk);
+            throw new ResourceNotFoundException("Resume non trovato per pk: " + pk);
+        }
+        return rm.datiGenerali();
+    }
+
+    @Override
+    public List<EsperienzaLavorativa> getEsperienzeByPk(String pk) {
+        logger.info("[START] getEsperienzeByPk, parametro: {}", pk);
+        var rm = dao.loadResumeByPk(pk);
+        if (rm == null) {
+            logger.warn("Resume not found for pk: {}", pk);
+            throw new ResourceNotFoundException("Resume non trovato per pk: " + pk);
+        }
+        return rm.esperienzeLavorative();
+    }
+
+    @Override
+    public EsperienzaLavorativa getEsperienzaByPkAndIndex(String pk, Integer index) {
+        logger.info("[START] getEsperienzaByPkAndIndex, parametro: {}", pk);
+        var list = getEsperienzeByPk(pk);
+        if (index == null) {
+            logger.warn("index is null");
+            throw new ResourceNotFoundException("Esperienza non trovata per index: null");
+        }
+        if (index < 0 || index >= list.size()) {
+            logger.warn("index out of range: {}", index);
+            throw new ResourceNotFoundException("Esperienza non trovata per index: " + index);
+        }
+        return list.get(index);
+    }
+
+    @Override
+    public List<IstruzioneFormazione> getIstruzioneByPk(String pk) {
+        logger.info("[START] getIstruzioneByPk, parametro: {}", pk);
+        var rm = dao.loadResumeByPk(pk);
+        if (rm == null) {
+            logger.warn("Resume not found for pk: {}", pk);
+            throw new ResourceNotFoundException("Resume non trovato per pk: " + pk);
+        }
+        return rm.istruzioneFormazione();
+    }
+
+    @Override
+    public IstruzioneFormazione getIstruzioneByPkAndIndex(String pk, Integer index) {
+        logger.info("[START] getIstruzioneByPkAndIndex, parametro: {}", pk);
+        var list = getIstruzioneByPk(pk);
+        if (index == null) {
+            logger.warn("index is null");
+            throw new ResourceNotFoundException("Istruzione non trovata per index: null");
+        }
+        if (index < 0 || index >= list.size()) {
+            logger.warn("index out of range: {}", index);
+            throw new ResourceNotFoundException("Istruzione non trovata per index: " + index);
+        }
+        return list.get(index);
+    }
+
+    @Override
+    public List<CompetenzaLinguistica> getLingueByPk(String pk) {
+        logger.info("[START] getLingueByPk, parametro: {}", pk);
+        var rm = dao.loadResumeByPk(pk);
+        if (rm == null) {
+            logger.warn("Resume not found for pk: {}", pk);
+            throw new ResourceNotFoundException("Resume non trovato per pk: " + pk);
+        }
+        return rm.competenzeLinguistiche();
+    }
+
+    @Override
+    public CompetenzaLinguistica getLinguaByPkAndIndex(String pk, Integer index) {
+        logger.info("[START] getLinguaByPkAndIndex, parametro: {}", pk);
+        var list = getLingueByPk(pk);
+        if (index == null) {
+            logger.warn("index is null");
+            throw new ResourceNotFoundException("Lingua non trovata per index: null");
+        }
+        if (index < 0 || index >= list.size()) {
+            logger.warn("index out of range: {}", index);
+            throw new ResourceNotFoundException("Lingua non trovata per index: " + index);
+        }
+        return list.get(index);
+    }
+
+    @Override
+    public List<Competenza> getTrasversaliByPk(String pk) {
+        logger.info("[START] getTrasversaliByPk, parametro: {}", pk);
+        var rm = dao.loadResumeByPk(pk);
+        if (rm == null) {
+            logger.warn("Resume not found for pk: {}", pk);
+            throw new ResourceNotFoundException("Resume non trovato per pk: " + pk);
+        }
+        return rm.competenzeTrasversali();
+    }
+
+    @Override
+    public Competenza getTrasversaleByPkAndIndex(String pk, Integer index) {
+        logger.info("[START] getTrasversaleByPkAndIndex, parametro: {}", pk);
+        var list = getTrasversaliByPk(pk);
+        if (index == null) {
+            logger.warn("index is null");
+            throw new ResourceNotFoundException("Competenza trasversale non trovata per index: null");
+        }
+        if (index < 0 || index >= list.size()) {
+            logger.warn("index out of range: {}", index);
+            throw new ResourceNotFoundException("Competenza trasversale non trovata per index: " + index);
+        }
+        return list.get(index);
+    }
+
+    @Override
+    public List<Competenza> getTecnologicheByPk(String pk) {
+        logger.info("[START] getTecnologicheByPk, parametro: {}", pk);
+        var rm = dao.loadResumeByPk(pk);
+        if (rm == null) {
+            logger.warn("Resume not found for pk: {}", pk);
+            throw new ResourceNotFoundException("Resume non trovato per pk: " + pk);
+        }
+        return rm.competenzeTecnologiche();
+    }
+
+    @Override
+    public Competenza getTecnologicaByPkAndIndex(String pk, Integer index) {
+        logger.info("[START] getTecnologicaByPkAndIndex, parametro: {}", pk);
+        var list = getTecnologicheByPk(pk);
+        if (index == null) {
+            logger.warn("index is null");
+            throw new ResourceNotFoundException("Competenza tecnologica non trovata per index: null");
+        }
+        if (index < 0 || index >= list.size()) {
+            logger.warn("index out of range: {}", index);
+            throw new ResourceNotFoundException("Competenza tecnologica non trovata per index: " + index);
+        }
+        return list.get(index);
+    }
+
+    @Override
+    public List<Competenza> getOrganizzativeByPk(String pk) {
+        logger.info("[START] getOrganizzativeByPk, parametro: {}", pk);
+        var rm = dao.loadResumeByPk(pk);
+        if (rm == null) {
+            logger.warn("Resume not found for pk: {}", pk);
+            throw new ResourceNotFoundException("Resume non trovato per pk: " + pk);
+        }
+        return rm.competenzeOrganizzative();
+    }
+
+    @Override
+    public Competenza getOrganizzativaByPkAndIndex(String pk, Integer index) {
+        logger.info("[START] getOrganizzativaByPkAndIndex, parametro: {}", pk);
+        var list = getOrganizzativeByPk(pk);
+        if (index == null) {
+            logger.warn("index is null");
+            throw new ResourceNotFoundException("Competenza organizzativa non trovata per index: null");
+        }
+        if (index < 0 || index >= list.size()) {
+            logger.warn("index out of range: {}", index);
+            throw new ResourceNotFoundException("Competenza organizzativa non trovata per index: " + index);
+        }
+        return list.get(index);
+    }
+
+    @Override
+    public List<Competenza> getFunzionaliByPk(String pk) {
+        logger.info("[START] getFunzionaliByPk, parametro: {}", pk);
+        var rm = dao.loadResumeByPk(pk);
+        if (rm == null) {
+            logger.warn("Resume not found for pk: {}", pk);
+            throw new ResourceNotFoundException("Resume non trovato per pk: " + pk);
+        }
+        return rm.competenzeFunzionali();
+    }
+
+    @Override
+    public Competenza getFunzionaleByPkAndIndex(String pk, Integer index) {
+        logger.info("[START] getFunzionaleByPkAndIndex, parametro: {}", pk);
+        var list = getFunzionaliByPk(pk);
+        if (index == null) {
+            logger.warn("index is null");
+            throw new ResourceNotFoundException("Competenza funzionale non trovata per index: null");
+        }
+        if (index < 0 || index >= list.size()) {
+            logger.warn("index out of range: {}", index);
+            throw new ResourceNotFoundException("Competenza funzionale non trovata per index: " + index);
+        }
+        return list.get(index);
+    }
+
 }

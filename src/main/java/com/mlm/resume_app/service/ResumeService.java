@@ -13,6 +13,8 @@ public interface ResumeService {
 
     ResumeModels getResume();
 
+    ResumeModels getResumeByPk(String pk);
+
     DatiGenerali getDatiGenerali();
 
     List<EsperienzaLavorativa> getEsperienze();
@@ -42,4 +44,35 @@ public interface ResumeService {
     List<Competenza> getFunzionali();
 
     Competenza getFunzionaleByIndex(Integer index);
+
+    // New PK-based methods
+    DatiGenerali getDatiGeneraliByPk(String pk);
+
+    List<EsperienzaLavorativa> getEsperienzeByPk(String pk);
+
+    EsperienzaLavorativa getEsperienzaByPkAndIndex(String pk, Integer index);
+
+    List<IstruzioneFormazione> getIstruzioneByPk(String pk);
+
+    IstruzioneFormazione getIstruzioneByPkAndIndex(String pk, Integer index);
+
+    List<CompetenzaLinguistica> getLingueByPk(String pk);
+
+    CompetenzaLinguistica getLinguaByPkAndIndex(String pk, Integer index);
+
+    List<Competenza> getTrasversaliByPk(String pk);
+
+    Competenza getTrasversaleByPkAndIndex(String pk, Integer index);
+
+    List<Competenza> getTecnologicheByPk(String pk);
+
+    Competenza getTecnologicaByPkAndIndex(String pk, Integer index);
+
+    List<Competenza> getOrganizzativeByPk(String pk);
+
+    Competenza getOrganizzativaByPkAndIndex(String pk, Integer index);
+
+    List<Competenza> getFunzionaliByPk(String pk);
+
+    Competenza getFunzionaleByPkAndIndex(String pk, Integer index);
 }

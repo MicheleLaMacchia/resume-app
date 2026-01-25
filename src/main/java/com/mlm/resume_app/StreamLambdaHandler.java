@@ -12,11 +12,11 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 public class StreamLambdaHandler implements RequestStreamHandler {
+    // Torniamo al formato standard AwsProxyRequest che è il più compatibile
     private static SpringBootLambdaContainerHandler<AwsProxyRequest, AwsProxyResponse> handler;
 
     static {
         try {
-            // Inizializzazione asincrona di Spring per migliorare i Cold Start
             handler = SpringBootLambdaContainerHandler.getAwsProxyHandler(ResumeAppApplication.class);
         } catch (ContainerInitializationException e) {
             e.printStackTrace();

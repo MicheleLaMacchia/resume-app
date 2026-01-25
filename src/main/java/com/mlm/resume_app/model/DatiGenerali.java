@@ -2,8 +2,17 @@ package com.mlm.resume_app.model;
 
 public record DatiGenerali(
 	    String dataDiNascita,
+	    String paeseDiNascita,
 	    String luogoDiNascita,
-	    String indirizzo,
+	    String indirizzoResidenza,
+	    String capResidenza,
+	    String cittaResidenza,
+	    String paeseResidenza,
+	    String indirizzoDomicilio,
+	    String capDomicilio,
+	    String cittaDomicilio,
+	    String paeseDomicilio,
 	    String nazionalita,
-	    String contatti
+	    String telefono,
+	    String email
 	) {}

@@ -2,7 +2,10 @@ package com.mlm.resume_app.controller;
 
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -19,7 +22,115 @@ public class ResumeController {
 
     @GetMapping("/resume")
     public ResumeModels getResume() {
-        
+        return buildResume();
+    }
+
+    // Nuovi endpoint richiesti
+
+    @GetMapping("/personal-data")
+    public DatiGenerali getPersonalData() {
+        return buildResume().datiGenerali();
+    }
+
+    @GetMapping("/working-experience")
+    public List<EsperienzaLavorativa> getWorkingExperience() {
+        return buildResume().esperienzeLavorative();
+    }
+
+    @GetMapping("/working-experience/{index}")
+    public ResponseEntity<EsperienzaLavorativa> getWorkingExperienceByIndex(@PathVariable("index") int index) {
+        var esperienze = buildResume().esperienzeLavorative();
+        if (index < 0 || index >= esperienze.size()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+        return ResponseEntity.ok(esperienze.get(index));
+    }
+
+    @GetMapping("/education-training")
+    public List<IstruzioneFormazione> getEducationTraining() {
+        return buildResume().istruzioneFormazione();
+    }
+
+    @GetMapping("/education-training/{index}")
+    public ResponseEntity<IstruzioneFormazione> getEducationTrainingByIndex(@PathVariable("index") int index) {
+        var lista = buildResume().istruzioneFormazione();
+        if (index < 0 || index >= lista.size()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+        return ResponseEntity.ok(lista.get(index));
+    }
+
+    @GetMapping("/language-skills")
+    public List<CompetenzaLinguistica> getLanguageSkills() {
+        return buildResume().competenzeLinguistiche();
+    }
+
+    @GetMapping("/language-skills/{index}")
+    public ResponseEntity<CompetenzaLinguistica> getLanguageSkillsByIndex(@PathVariable("index") int index) {
+        var lista = buildResume().competenzeLinguistiche();
+        if (index < 0 || index >= lista.size()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+        return ResponseEntity.ok(lista.get(index));
+    }
+
+    @GetMapping("/soft-skills")
+    public List<Competenza> getSoftSkills() {
+        return buildResume().competenzeTrasversali();
+    }
+
+    @GetMapping("/soft-skills/{index}")
+    public ResponseEntity<Competenza> getSoftSkillsByIndex(@PathVariable("index") int index) {
+        var lista = buildResume().competenzeTrasversali();
+        if (index < 0 || index >= lista.size()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+        return ResponseEntity.ok(lista.get(index));
+    }
+
+    @GetMapping("/technical-skills")
+    public List<Competenza> getTechnicalSkills() {
+        return buildResume().competenzeTecnologiche();
+    }
+
+    @GetMapping("/technical-skills/{index}")
+    public ResponseEntity<Competenza> getTechnicalSkillsByIndex(@PathVariable("index") int index) {
+        var lista = buildResume().competenzeTecnologiche();
+        if (index < 0 || index >= lista.size()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+        return ResponseEntity.ok(lista.get(index));
+    }
+
+    @GetMapping("/organizational-skills")
+    public List<Competenza> getOrganizationalSkills() {
+        return buildResume().competenzeOrganizzative();
+    }
+
+    @GetMapping("/organizational-skills/{index}")
+    public ResponseEntity<Competenza> getOrganizationalSkillsByIndex(@PathVariable("index") int index) {
+        var lista = buildResume().competenzeOrganizzative();
+        if (index < 0 || index >= lista.size()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+        return ResponseEntity.ok(lista.get(index));
+    }
+
+    @GetMapping("/functional-skills")
+    public List<Competenza> getFunctionalSkills() {
+        return buildResume().competenzeFunzionali();
+    }
+
+    @GetMapping("/functional-skills/{index}")
+    public ResponseEntity<Competenza> getFunctionalSkillsByIndex(@PathVariable("index") int index) {
+        var lista = buildResume().competenzeFunzionali();
+        if (index < 0 || index >= lista.size()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+        return ResponseEntity.ok(lista.get(index));
+    }
+
+    private ResumeModels buildResume() {
         var datiGenerali = new DatiGenerali(
             "27/01/1991",
             "Roma, Italia",

@@ -1,5 +1,5 @@
 # STAGE 1: Build
-FROM maven:3.9-eclipse-temurin-17-alpine AS build
+FROM public.ecr.aws/docker/library/maven:3.9-eclipse-temurin-17-alpine AS build
 COPY pom.xml /app/
 COPY src /app/src/
 WORKDIR /app

@@ -10,7 +10,7 @@ import com.mlm.resume_app.dao.DynamoResumeDaoImpl;
 import com.mlm.resume_app.dao.InMemoryResumeDao;
 import com.mlm.resume_app.model.ResumeModels;
 
-@Component
+//@Component
 public class DynamoDbInitializer {
 
     private static final Logger logger = LoggerFactory.getLogger(DynamoDbInitializer.class);

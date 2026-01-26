@@ -31,20 +31,20 @@ public class InMemoryResumeDao implements ResumeDao {
     private ResumeModels loadSeed() {
         var datiGenerali = new DatiGenerali(
             "AAAAAA00A00A000A",   // codiceFiscale
-            "27/01/1991",          // dataDiNascita
+            "28/01/1991",          // dataDiNascita
             "Italia",              // paeseDiNascita
             "Roma",                // luogoDiNascita
-            "Via Giuseppe Lipparini, 13", // indirizzoResidenza
+            "Via Giuseppe Mazzini, 1", // indirizzoResidenza
             "00143",               // capResidenza
             "Roma",                // cittaResidenza
             "Italia",              // paeseResidenza
-            "Via Giuseppe Lipparini, 13", // indirizzoDomicilio
+            "Via Giuseppe Mazzini, 1", // indirizzoDomicilio
             "00143",               // capDomicilio
             "Roma",                // cittaDomicilio
             "Italia",              // paeseDomicilio
             "Italiana",            // nazionalita
-            "3336517765",          // telefono
-            "michele.lamacchia91@gmail.com" // email
+            "3333333333",          // telefono
+            "michele@gmail.com" // email
         );
 
         var esperienze = List.of(

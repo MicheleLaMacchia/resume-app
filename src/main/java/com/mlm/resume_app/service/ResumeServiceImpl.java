@@ -196,7 +196,6 @@ public class ResumeServiceImpl implements ResumeService {
         return list.get(index);
     }
 
-    // New PK-based implementations
     @Override
     public DatiGenerali getDatiGeneraliByPk(String pk) {
         logger.info("[START] getDatiGeneraliByPk, parametro: {}", pk);

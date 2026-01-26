@@ -15,7 +15,7 @@ public class OpenApiConfig {
                 .components(new Components())
                 .info(new Info()
                         .title("Resume API - Michele La Macchia")
-                        .description("API per esporre i nodi del CV")
+                        .description("API per esporre i dati del CV")
                         .version("1.0.0")
                 );
     }

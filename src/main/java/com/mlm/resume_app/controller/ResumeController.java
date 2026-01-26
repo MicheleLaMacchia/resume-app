@@ -5,10 +5,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.mlm.resume_app.model.Competenza;
 import com.mlm.resume_app.model.CompetenzaLinguistica;
@@ -30,10 +27,19 @@ public class ResumeController {
         this.resumeService = resumeService;
     }
 
-    @GetMapping("/test")
-    public ResumeModels getTest() {
-        logger.info("GET /api/test");
-        return resumeService.getResumeByPk("AAAAAA00A00A000A");
+    @PostMapping("/resume")
+    public ResponseEntity<String> createResume(@RequestBody ResumeModels resume) {
+        try {
+            resumeService.saveResume(resume);
+            return ResponseEntity.ok("Resume inserito con successo");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/resume-list")
+    public ResponseEntity<List<String>> getResumeList() {
+        return ResponseEntity.ok(resumeService.getAllCodiciFiscali());
     }
 
     @GetMapping("/resume/{pk}")
@@ -138,4 +144,11 @@ public class ResumeController {
         var item = resumeService.getFunzionaleByPkAndIndex(pk, index);
         return ResponseEntity.ok(item);
     }
+
+    @GetMapping("/test")
+    public ResumeModels getTest() {
+        logger.info("GET /api/test");
+        return resumeService.getResumeByPk("AAAAAA00A00A000A");
+    }
+
 }

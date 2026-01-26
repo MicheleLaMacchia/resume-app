@@ -28,6 +28,16 @@ public class InMemoryResumeDao implements ResumeDao {
         return null;
     }
 
+    @Override
+    public List<String> loadAllResumePk() {
+        return List.of(loadSeed().datiGenerali().codiceFiscale());
+    }
+
+    @Override
+    public void putResume(ResumeModels resume) {
+        // In-memory DAO does not persist data
+    }
+
     private ResumeModels loadSeed() {
         var datiGenerali = new DatiGenerali(
             "AAAAAA00A00A000A",   // codiceFiscale

@@ -75,4 +75,8 @@ public interface ResumeService {
     List<Competenza> getFunzionaliByPk(String pk);
 
     Competenza getFunzionaleByPkAndIndex(String pk, Integer index);
+
+    ResumeModels saveResume(ResumeModels resume);
+
+    List<String> getAllCodiciFiscali();
 }

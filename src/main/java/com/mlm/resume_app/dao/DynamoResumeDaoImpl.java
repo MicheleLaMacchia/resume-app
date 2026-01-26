@@ -1,6 +1,9 @@
 package com.mlm.resume_app.dao;
 
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
@@ -10,17 +13,7 @@ import com.mlm.resume_app.model.DatiGenerali;
 import com.mlm.resume_app.model.ResumeModels;
 
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
-import software.amazon.awssdk.services.dynamodb.model.AttributeDefinition;
-import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
-import software.amazon.awssdk.services.dynamodb.model.CreateTableRequest;
-import software.amazon.awssdk.services.dynamodb.model.DescribeTableRequest;
-import software.amazon.awssdk.services.dynamodb.model.DescribeTableResponse;
-import software.amazon.awssdk.services.dynamodb.model.GetItemRequest;
-import software.amazon.awssdk.services.dynamodb.model.PutItemRequest;
-import software.amazon.awssdk.services.dynamodb.model.ResourceNotFoundException;
-import software.amazon.awssdk.services.dynamodb.model.KeySchemaElement;
-import software.amazon.awssdk.services.dynamodb.model.KeyType;
-import software.amazon.awssdk.services.dynamodb.model.ScalarAttributeType;
+import software.amazon.awssdk.services.dynamodb.model.*;
 
 @Primary
 @Repository
@@ -126,6 +119,35 @@ public class DynamoResumeDaoImpl implements ResumeDao {
         }
     }
 
+    @Override
+    public List<String> loadAllResumePk() {
+        try {
+            ScanRequest scanRequest = ScanRequest.builder()
+                    .tableName(TABLE_NAME)
+                    .projectionExpression("#pk")
+                    .filterExpression("#sk = :skValue")
+                    .expressionAttributeNames(Map.of(
+                            "#pk", PK,
+                            "#sk", SK
+                    ))
+                    .expressionAttributeValues(Map.of(
+                            ":skValue", AttributeValue.builder().s(PROFILE_SK).build()
+                    ))
+                    .build();
+
+            ScanResponse response = client.scan(scanRequest);
+
+            return response.items().stream()
+                    .map(item -> item.get(PK).s())
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toList());
+
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to load all resume PKs", e);
+        }
+    }
+
+    @Override
     public void putResume(ResumeModels resume) {
         try {
             String json = mapper.writeValueAsString(resume);
@@ -148,8 +170,15 @@ public class DynamoResumeDaoImpl implements ResumeDao {
                         DATA, AttributeValue.builder().s(json).build()
                 );
             }
-            PutItemRequest req = PutItemRequest.builder().tableName(TABLE_NAME).item(item).build();
+            PutItemRequest req = PutItemRequest.builder()
+                    .tableName(TABLE_NAME)
+                    .item(item)
+                    .conditionExpression("attribute_not_exists(" + PK + ")")
+                    .build();
+
             client.putItem(req);
+        } catch (ConditionalCheckFailedException e) {
+            throw new RuntimeException("Il Resume con questo Codice Fiscale esiste già a sistema.");
         } catch (Exception ex) {
             throw new RuntimeException("Failed to put resume into DynamoDB", ex);
         }

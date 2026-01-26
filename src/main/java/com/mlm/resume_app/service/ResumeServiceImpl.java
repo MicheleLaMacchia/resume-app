@@ -376,7 +376,7 @@ public class ResumeServiceImpl implements ResumeService {
 
     @Override
     public Competenza getFunzionaleByPkAndIndex(String pk, Integer index) {
-        logger.info("[START] getFunzionaleByPkAndIndex, parametro: {}", pk);
+        logger.info("[START] getFunzionaleByPkAndIndex :: pk: {} :: index: {}", pk, index);
         var list = getFunzionaliByPk(pk);
         if (index == null) {
             logger.warn("index is null");
@@ -389,4 +389,20 @@ public class ResumeServiceImpl implements ResumeService {
         return list.get(index);
     }
 
+    @Override
+    public ResumeModels saveResume(ResumeModels resume) {
+        logger.info("[START] saveResume :: resume: {}", resume);
+        if (resume == null || resume.datiGenerali() == null || resume.datiGenerali().codiceFiscale() == null || resume.datiGenerali().codiceFiscale().isBlank()) {
+            logger.warn("Invalid resume data: codiceFiscale is mandatory");
+            throw new IllegalArgumentException("Il codiceFiscale è obbligatorio per salvare il curriculum.");
+        }
+        dao.putResume(resume);
+        logger.info("Resume saved successfully for pk: {}", resume.datiGenerali().codiceFiscale());
+        return resume;
+    }
+
+    public List<String> getAllCodiciFiscali() {
+        logger.info("[START] getAllCodiciFiscali");
+        return dao.loadAllResumePk();
+    }
 }

@@ -1,6 +1,9 @@
 package com.mlm.resume_app.model;
 
+import jakarta.validation.constraints.NotBlank;
+
 public record DatiGenerali(
+	    @NotBlank
 	    String codiceFiscale,
 	    String dataDiNascita,
 	    String paeseDiNascita,

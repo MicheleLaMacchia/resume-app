@@ -4,8 +4,10 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
 
 import com.mlm.resume_app.model.Competenza;
 import com.mlm.resume_app.model.CompetenzaLinguistica;
@@ -28,13 +30,9 @@ public class ResumeController {
     }
 
     @PostMapping("/resume")
-    public ResponseEntity<String> createResume(@RequestBody ResumeModels resume) {
-        try {
-            resumeService.saveResume(resume);
-            return ResponseEntity.ok("Resume inserito con successo");
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    public ResponseEntity<Void> createResume(@Valid @RequestBody ResumeModels resume) {
+        resumeService.saveResume(resume);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @GetMapping("/resume-list")

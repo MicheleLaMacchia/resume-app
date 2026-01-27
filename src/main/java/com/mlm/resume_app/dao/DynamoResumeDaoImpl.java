@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mlm.resume_app.exception.DuplicateResumeException;
 import com.mlm.resume_app.model.DatiGenerali;
 import com.mlm.resume_app.model.ResumeModels;
 
@@ -178,7 +179,7 @@ public class DynamoResumeDaoImpl implements ResumeDao {
 
             client.putItem(req);
         } catch (ConditionalCheckFailedException e) {
-            throw new RuntimeException("Il Resume con questo Codice Fiscale esiste già a sistema.");
+            throw new DuplicateResumeException("Il Resume con questo Codice Fiscale esiste già a sistema.");
         } catch (Exception ex) {
             throw new RuntimeException("Failed to put resume into DynamoDB", ex);
         }

@@ -392,10 +392,6 @@ public class ResumeServiceImpl implements ResumeService {
     @Override
     public ResumeModels saveResume(ResumeModels resume) {
         logger.info("[START] saveResume :: resume: {}", resume);
-        if (resume == null || resume.datiGenerali() == null || resume.datiGenerali().codiceFiscale() == null || resume.datiGenerali().codiceFiscale().isBlank()) {
-            logger.warn("Invalid resume data: codiceFiscale is mandatory");
-            throw new IllegalArgumentException("Il codiceFiscale è obbligatorio per salvare il curriculum.");
-        }
         dao.putResume(resume);
         logger.info("Resume saved successfully for pk: {}", resume.datiGenerali().codiceFiscale());
         return resume;

@@ -55,7 +55,6 @@
         <strong>Nazionalità:</strong> <span th:text="${resume.datiGenerali.nazionalita}">Italiana</span><br/>
         <strong>Numero di telefono:</strong> <span th:text="${resume.datiGenerali.telefono}">(+39) 3336517765</span> |
         <strong>Indirizzo e-mail:</strong> <span th:text="${resume.datiGenerali.email}">michele.lamacchia91@gmail.com</span><br/>
-        <strong>LinkedIn:</strong> <a th:href="${resume.datiGenerali.linkedin}" th:text="${resume.datiGenerali.linkedin}">https://www.linkedin.com/in/michele-la-macchia-2b2079107/</a><br/>
         <strong>Indirizzo:</strong> <span th:text="${resume.datiGenerali.indirizzoResidenza}">Via Giuseppe Lipparini, 13, 00143, Roma, Italia (Abitazione)</span>
     </div>
 </div>
@@ -63,7 +62,7 @@
 <div class="section">
     <div class="section-title">ESPERIENZA LAVORATIVA</div>
     <div th:each="exp : ${resume.esperienzeLavorative}" class="job">
-        <div class="job-title" th:text="${exp.ruolo} + ' - ' + ${exp.nomeAzienda}">SOFTWARE DEVELOPMENT SPECIALIST – ENGINEERING INGEGNERIA INFORMATICA</div>
+        <div class="job-title" th:text="${exp.ruolo} + ' - ' + ${exp.azienda}">SOFTWARE DEVELOPMENT SPECIALIST – ENGINEERING INGEGNERIA INFORMATICA</div>
         <div class="job-period" th:text="${exp.dataInizio} + ' - ' + ${exp.dataFine}">18/09/2023 - Attuale - ROMA, ITALIA</div>
         <p th:text="${exp.descrizione}">Descrizione dell'esperienza...</p>
     </div>
@@ -72,7 +71,7 @@
 <div class="section">
     <div class="section-title">ISTRUZIONE E FORMAZIONE</div>
     <div th:each="edu : ${resume.istruzioneFormazione}" class="job">
-        <div class="job-title" th:text="${edu.titolo} + ' - ' + ${edu.istituto}">ASSOCIATE CLOUD ENGINEER CERTIFICATION Google Cloud</div>
+        <div class="job-title" th:text="${edu.enteRilascio} + ' - ' + ${edu.titolo}">ASSOCIATE CLOUD ENGINEER CERTIFICATION Google Cloud</div>
         <div class="job-period" th:text="${edu.dataInizio} + ' - ' + ${edu.dataFine}">22/12/2025 - 22/12/2028</div>
         <p th:text="${edu.descrizione}">Descrizione della formazione...</p>
     </div>

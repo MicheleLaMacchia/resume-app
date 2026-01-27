@@ -44,6 +44,8 @@ public class TestController {
 
         DatiGenerali newDatiGenerali = new DatiGenerali(
             generateRandomCodiceFiscale(),
+            seedData.datiGenerali().nome(),
+            seedData.datiGenerali().cognome(),
             seedData.datiGenerali().dataDiNascita(),
             seedData.datiGenerali().paeseDiNascita(),
             seedData.datiGenerali().luogoDiNascita(),

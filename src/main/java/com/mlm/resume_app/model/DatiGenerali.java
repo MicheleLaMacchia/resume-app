@@ -5,6 +5,8 @@ import jakarta.validation.constraints.NotBlank;
 public record DatiGenerali(
 	    @NotBlank
 	    String codiceFiscale,
+	    String nome,
+	    String cognome,
 	    String dataDiNascita,
 	    String paeseDiNascita,
 	    String luogoDiNascita,

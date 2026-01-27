@@ -4,6 +4,6 @@ public record IstruzioneFormazione(
 	    String dataInizio,
 	    String dataFine,
 	    String enteRilascio,
-	    String descrizione,
-	    String altro
+		String titolo,
+	    String descrizione
 	) {}

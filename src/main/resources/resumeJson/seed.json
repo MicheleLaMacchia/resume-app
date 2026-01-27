@@ -1,6 +1,8 @@
 {
   "datiGenerali": {
     "codiceFiscale": "AAAAAA00A00A000A",
+    "nome": "Mike",
+    "cognome": "Lama",
     "dataDiNascita": "28/01/1991",
     "paeseDiNascita": "Italia",
     "luogoDiNascita": "Roma",
@@ -20,47 +22,47 @@
     {
       "dataInizio": "18/09/2023",
       "dataFine": "Attuale",
-      "nomeAzienda": "ENGINEERING INGEGNERIA INFORMATICA",
+      "azienda": "ENGINEERING INGEGNERIA INFORMATICA",
       "ruolo": "SOFTWARE DEVELOPMENT SPECIALIST",
       "descrizione": "Software Engineer / Tech Lead su ecosistemi di micro-servizi e web app.",
-      "tecnologie": "Sviluppo Fullstack (Java/Spring, Angular), Cloud, Docker, Agile."
+      "altro": "Sviluppo Fullstack (Java/Spring, Angular), Cloud, Docker, Agile."
     },
     {
       "dataInizio": "01/05/2021",
       "dataFine": "15/09/2023",
-      "nomeAzienda": "NTTDATA",
+      "azienda": "NTTDATA",
       "ruolo": "SVILUPPATORE DI SOFTWARE",
       "descrizione": "Supporto tecnico progetto Notifica Digitale PagoPA.",
-      "tecnologie": "JavaEE, AWS (DynamoDB, Lambda, SQS), React, Node.js."
+      "altro": "JavaEE, AWS (DynamoDB, Lambda, SQS), React, Node.js."
     },
     {
       "dataInizio": "31/08/2020",
       "dataFine": "02/04/2021",
-      "nomeAzienda": "GRUPPO SINCRONO",
+      "azienda": "GRUPPO SINCRONO",
       "ruolo": "JAVA DEVELOPER",
       "descrizione": "Sviluppo CRM e consulenza NTTData per portale Agenzia delle Entrate.",
-      "tecnologie": "Java, MyBatis, Oracle, React."
+      "altro": "Java, MyBatis, Oracle, React."
     }
   ],
   "istruzioneFormazione": [
     {
       "dataInizio": "22/12/2025",
       "dataFine": "22/12/2028",
-      "istituto": "Google Cloud",
+      "enteRilascio": "Google Cloud",
       "titolo": "ASSOCIATE CLOUD ENGINEER CERTIFICATION",
       "descrizione": "Certificazione tecnica Google Cloud."
     },
     {
       "dataInizio": "22/01/2022",
       "dataFine": "22/01/2025",
-      "istituto": "AWS",
+      "enteRilascio": "AWS",
       "titolo": "AWS CERTIFIED CLOUD PRACTITIONER",
       "descrizione": "Certificazione base Cloud AWS."
     },
     {
       "dataInizio": "02/02/2020",
       "dataFine": "15/07/2020",
-      "istituto": "Gruppo Sincrono",
+      "enteRilascio": "Gruppo Sincrono",
       "titolo": "ATTESTATO DI PROGRAMMAZIONE JAVA",
       "descrizione": "Corso intensivo di programmazione Java."
     }
@@ -68,64 +70,64 @@
   "competenzeLinguistiche": [
     {
       "lingua": "ITALIANO",
-      "comprensione": "Madrelingua",
-      "parlato": "Madrelingua",
-      "scritto": "Madrelingua",
-      "livello": "Madrelingua"
+      "livelloAscolto": "Madrelingua",
+      "livelloLettura": "Madrelingua",
+      "livelloProduzioneOrale": "Madrelingua",
+      "livelloInterazioneOrale": "Madrelingua"
     },
     {
       "lingua": "INGLESE",
-      "comprensione": "B2",
-      "parlato": "B2",
-      "scritto": "B2",
-      "livello": "B2"
+      "livelloAscolto": "B2",
+      "livelloLettura": "B2",
+      "livelloProduzioneOrale": "B2",
+      "livelloInterazioneOrale": "B2"
     }
   ],
   "competenzeTrasversali": [
     {
-      "nome": "Problem Solving Analitico",
+      "titolo": "Problem Solving Analitico",
       "descrizione": "Analisi logica e risoluzione problematiche complesse."
     },
     {
-      "nome": "Comunicazione Efficace",
+      "titolo": "Comunicazione Efficace",
       "descrizione": "Gestione Stakeholder e trasmissione info tecniche."
     },
     {
-      "nome": "Flessibilità",
+      "titolo": "Flessibilità",
       "descrizione": "Adattamento a contesti dinamici e nuove tecnologie."
     }
   ],
   "competenzeTecnologiche": [
     {
-      "nome": "Sviluppo Fullstack",
+      "titolo": "Sviluppo Fullstack",
       "descrizione": "Java (Spring) e Angular/React."
     },
     {
-      "nome": "Cloud & Container",
+      "titolo": "Cloud & Container",
       "descrizione": "AWS, GCP e Docker."
     },
     {
-      "nome": "AI-Assisted Engineering",
+      "titolo": "AI-Assisted Engineering",
       "descrizione": "Integrazione AI generativa per efficienza codice."
     }
   ],
   "competenzeOrganizzative": [
     {
-      "nome": "Gestione Agile",
+      "titolo": "Gestione Agile",
       "descrizione": "Operatività Jira e flussi di lavoro Agile."
     },
     {
-      "nome": "Tech Leadership",
+      "titolo": "Tech Leadership",
       "descrizione": "Mentoring, onboarding e code review."
     }
   ],
   "competenzeFunzionali": [
     {
-      "nome": "Analisi Requisiti",
+      "titolo": "Analisi Requisiti",
       "descrizione": "Traduzione esigenze business in specifiche tecniche."
     },
     {
-      "nome": "Processi PA",
+      "titolo": "Processi PA",
       "descrizione": "Conoscenza dinamiche funzionali Pubblica Amministrazione."
     }
   ]

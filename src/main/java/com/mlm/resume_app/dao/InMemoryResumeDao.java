@@ -1,136 +1,54 @@
 package com.mlm.resume_app.dao;
 
-import java.util.List;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mlm.resume_app.model.ResumeModels;
+import jakarta.annotation.PostConstruct;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Repository;
 
-import com.mlm.resume_app.model.Competenza;
-import com.mlm.resume_app.model.CompetenzaLinguistica;
-import com.mlm.resume_app.model.DatiGenerali;
-import com.mlm.resume_app.model.EsperienzaLavorativa;
-import com.mlm.resume_app.model.IstruzioneFormazione;
-import com.mlm.resume_app.model.ResumeModels;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
 
 @Repository
 public class InMemoryResumeDao implements ResumeDao {
 
+    private ResumeModels seedData;
+    private final ObjectMapper mapper = new ObjectMapper();
+
+    @PostConstruct
+    public void init() {
+        try (InputStream inputStream = new ClassPathResource("resumeJson/seed.json").getInputStream()) {
+            this.seedData = mapper.readValue(inputStream, ResumeModels.class);
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to load seed data from JSON", e);
+        }
+    }
+
     @Override
     public ResumeModels loadResume() {
-        return loadSeed();
+        return seedData;
     }
 
     @Override
     public ResumeModels loadResumeByPk(String pk) {
-        var seed = loadSeed();
-        if (seed != null && seed.datiGenerali() != null && seed.datiGenerali().codiceFiscale() != null && seed.datiGenerali().codiceFiscale().equals(pk)) {
-            return seed;
+        if (seedData != null && seedData.datiGenerali() != null && seedData.datiGenerali().codiceFiscale() != null && seedData.datiGenerali().codiceFiscale().equals(pk)) {
+            return seedData;
         }
         return null;
     }
 
     @Override
     public List<String> loadAllResumePk() {
-        return List.of(loadSeed().datiGenerali().codiceFiscale());
+        if (seedData != null && seedData.datiGenerali() != null && seedData.datiGenerali().codiceFiscale() != null) {
+            return List.of(seedData.datiGenerali().codiceFiscale());
+        }
+        return List.of();
     }
 
     @Override
     public void putResume(ResumeModels resume) {
-        // In-memory DAO does not persist data
-    }
-
-    private ResumeModels loadSeed() {
-        var datiGenerali = new DatiGenerali(
-            "AAAAAA00A00A000A",   // codiceFiscale
-            "28/01/1991",          // dataDiNascita
-            "Italia",              // paeseDiNascita
-            "Roma",                // luogoDiNascita
-            "Via Giuseppe Mazzini, 1", // indirizzoResidenza
-            "00143",               // capResidenza
-            "Roma",                // cittaResidenza
-            "Italia",              // paeseResidenza
-            "Via Giuseppe Mazzini, 1", // indirizzoDomicilio
-            "00143",               // capDomicilio
-            "Roma",                // cittaDomicilio
-            "Italia",              // paeseDomicilio
-            "Italiana",            // nazionalita
-            "3333333333",          // telefono
-            "michele@gmail.com" // email
-        );
-
-        var esperienze = List.of(
-            new EsperienzaLavorativa(
-                "18/09/2023", "Attuale",
-                "ENGINEERING INGEGNERIA INFORMATICA",
-                "SOFTWARE DEVELOPMENT SPECIALIST",
-                "Software Engineer / Tech Lead su ecosistemi di micro-servizi e web app.",
-                "Sviluppo Fullstack (Java/Spring, Angular), Cloud, Docker, Agile."
-            ),
-            new EsperienzaLavorativa(
-                "01/05/2021", "15/09/2023",
-                "NTTDATA",
-                "SVILUPPATORE DI SOFTWARE",
-                "Supporto tecnico progetto Notifica Digitale PagoPA.",
-                "JavaEE, AWS (DynamoDB, Lambda, SQS), React, Node.js."
-            ),
-            new EsperienzaLavorativa(
-                "31/08/2020", "02/04/2021",
-                "GRUPPO SINCRONO",
-                "JAVA DEVELOPER",
-                "Sviluppo CRM e consulenza NTTData per portale Agenzia delle Entrate.",
-                "Java, MyBatis, Oracle, React."
-            )
-        );
-
-        var istruzione = List.of(
-            new IstruzioneFormazione(
-                "22/12/2025", "22/12/2028",
-                "Google Cloud",
-                "ASSOCIATE CLOUD ENGINEER CERTIFICATION",
-                "Certificazione tecnica Google Cloud."
-            ),
-            new IstruzioneFormazione(
-                "22/01/2022", "22/01/2025",
-                "AWS",
-                "AWS CERTIFIED CLOUD PRACTITIONER",
-                "Certificazione base Cloud AWS."
-            ),
-            new IstruzioneFormazione(
-                "02/02/2020", "15/07/2020",
-                "Gruppo Sincrono",
-                "ATTESTATO DI PROGRAMMAZIONE JAVA",
-                "Corso intensivo di programmazione Java."
-            )
-        );
-
-        var lingue = List.of(
-            new CompetenzaLinguistica("ITALIANO", "Madrelingua", "Madrelingua", "Madrelingua", "Madrelingua"),
-            new CompetenzaLinguistica("INGLESE", "B2", "B2", "B2", "B2")
-        );
-
-        var trasversali = List.of(
-            new Competenza("Problem Solving Analitico", "Analisi logica e risoluzione problematiche complesse."),
-            new Competenza("Comunicazione Efficace", "Gestione Stakeholder e trasmissione info tecniche."),
-            new Competenza("Flessibilità", "Adattamento a contesti dinamici e nuove tecnologie.")
-        );
-
-        var tecnologiche = List.of(
-            new Competenza("Sviluppo Fullstack", "Java (Spring) e Angular/React."),
-            new Competenza("Cloud & Container", "AWS, GCP e Docker."),
-            new Competenza("AI-Assisted Engineering", "Integrazione AI generativa per efficienza codice.")
-        );
-
-        var organizzative = List.of(
-            new Competenza("Gestione Agile", "Operatività Jira e flussi di lavoro Agile."),
-            new Competenza("Tech Leadership", "Mentoring, onboarding e code review.")
-        );
-
-        var funzionali = List.of(
-            new Competenza("Analisi Requisiti", "Traduzione esigenze business in specifiche tecniche."),
-            new Competenza("Processi PA", "Conoscenza dinamiche funzionali Pubblica Amministrazione.")
-        );
-
-        return new ResumeModels(
-            datiGenerali, esperienze, istruzione, lingue, trasversali, tecnologiche, organizzative, funzionali
-        );
+        // not implemented
     }
 }
+

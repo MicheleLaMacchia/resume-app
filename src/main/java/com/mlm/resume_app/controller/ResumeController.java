@@ -143,10 +143,5 @@ public class ResumeController {
         return ResponseEntity.ok(item);
     }
 
-    @GetMapping("/test")
-    public ResumeModels getTest() {
-        logger.info("GET /api/test");
-        return resumeService.getResumeByPk("AAAAAA00A00A000A");
-    }
 
 }

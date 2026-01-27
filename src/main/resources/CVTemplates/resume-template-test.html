@@ -43,6 +43,24 @@
             font-style: italic;
             color: #555;
         }
+        .skill {
+            margin-bottom: 10px;
+        }
+        .skill-name {
+            font-weight: bold;
+            margin-bottom: 3px;
+        }
+        .skill-details {
+            margin-left: 15px;
+            font-size: 0.9em;
+        }
+        .skill-detail {
+            margin-bottom: 2px;
+            bold;
+        }
+        .skill-description {
+            margin-left: 15px;
+        }
     </style>
 </head>
 <body>
@@ -77,7 +95,55 @@
     </div>
 </div>
 
-<!-- Altre sezioni (Competenze, etc.) possono essere aggiunte qui seguendo lo stesso pattern -->
+<!-- Sezione Competenze Linguistiche -->
+<div class="section">
+    <div class="section-title">COMPETENZE LINGUISTICHE</div>
+    <div th:each="lingua : ${resume.competenzeLinguistiche}" class="job">
+        <div class="job-title" th:text="${lingua.lingua}">Lingua</div>
+        <div class="skill-details">
+            <span class="skill-detail"><strong>Ascolto: </strong></span><span th:text="${lingua.livelloAscolto}">Livello</span> |
+            <span class="skill-detail"><strong>Lettura: </strong></span><span th:text="${lingua.livelloLettura}">Livello</span>
+            <span class="skill-detail"><strong>Produzione orale: </strong></span><span th:text="${lingua.livelloProduzioneOrale}">Livello</span> |
+            <span class="skill-detail"><strong>Interazione orale: </strong></span><span th:text="${lingua.livelloInterazioneOrale}">Livello</span>
+        </div>
+    </div>
+</div>
+
+<!-- Sezione Competenze Trasversali -->
+<div class="section">
+    <div class="section-title">COMPETENZE TRASVERSALI</div>
+    <div th:each="skill : ${resume.competenzeTrasversali}" class="job">
+        <div class="job-title" th:text="${skill.titolo}">Titolo competenza</div>
+        <p th:text="${skill.descrizione}">Descrizione della competenza</p>
+    </div>
+</div>
+
+<!-- Sezione Competenze Tecnologiche -->
+<div class="section">
+    <div class="section-title">COMPETENZE TECNOLOGICHE</div>
+    <div th:each="skill : ${resume.competenzeTecnologiche}" class="job">
+        <div class="job-title" th:text="${skill.titolo}">Titolo competenza</div>
+        <p th:text="${skill.descrizione}">Descrizione della competenza</p>
+    </div>
+</div>
+
+<!-- Sezione Competenze Organizzative -->
+<div class="section">
+    <div class="section-title">COMPETENZE ORGANIZZATIVE</div>
+    <div th:each="skill : ${resume.competenzeOrganizzative}" class="job">
+        <div class="job-title" th:text="${skill.titolo}">Titolo competenza</div>
+        <p th:text="${skill.descrizione}">Descrizione della competenza</p>
+    </div>
+</div>
+
+<!-- Sezione Competenze Funzionali -->
+<div class="section">
+    <div class="section-title">COMPETENZE FUNZIONALI</div>
+    <div th:each="skill : ${resume.competenzeFunzionali}" class="job">
+        <div class="job-title" th:text="${skill.titolo}">Titolo competenza</div>
+        <p th:text="${skill.descrizione}">Descrizione della competenza</p>
+    </div>
+</div>
 
 </body>
 </html>

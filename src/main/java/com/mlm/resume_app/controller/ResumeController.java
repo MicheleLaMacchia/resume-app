@@ -18,7 +18,7 @@ import com.mlm.resume_app.model.ResumeModels;
 import com.mlm.resume_app.service.ResumeService;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/resume")
 public class ResumeController {
 
     private static final Logger logger = LoggerFactory.getLogger(ResumeController.class);
@@ -29,18 +29,18 @@ public class ResumeController {
         this.resumeService = resumeService;
     }
 
-    @PostMapping("/resume")
+    @PostMapping("")
     public ResponseEntity<Void> createResume(@Valid @RequestBody ResumeModels resume) {
         resumeService.saveResume(resume);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @GetMapping("/resume-list")
+    @GetMapping("/list")
     public ResponseEntity<List<String>> getResumeList() {
         return ResponseEntity.ok(resumeService.getAllCodiciFiscali());
     }
 
-    @GetMapping("/resume/{pk}")
+    @GetMapping("/{pk}")
     public ResumeModels getResume(@PathVariable("pk") String pk) {
         logger.info("GET /api/resume/{}", pk);
         return resumeService.getResumeByPk(pk);

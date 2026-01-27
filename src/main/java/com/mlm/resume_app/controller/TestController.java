@@ -30,9 +30,9 @@ public class TestController {
         this.inMemoryResumeDao = inMemoryResumeDao;
     }
 
-    @GetMapping("/resume")
+    @GetMapping("/mock")
     public ResumeModels getTest() {
-        logger.info("GET /api/test/resume");
+        logger.info("GET /api/test/mock");
         return resumeService.getResumeByPk("AAAAAA00A00A000A");
     }
 

@@ -1,6 +1,8 @@
 package com.mlm.resume_app.dao;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mlm.resume_app.exception.DuplicateResumeException;
+import com.mlm.resume_app.model.DatiGenerali;
 import com.mlm.resume_app.model.ResumeModels;
 import jakarta.annotation.PostConstruct;
 import org.springframework.context.annotation.Profile;
@@ -9,19 +11,22 @@ import org.springframework.stereotype.Repository;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 @Repository
 @Profile("local-inmemory")
 public class InMemoryResumeDaoImpl implements ResumeDao {
 
-    private ResumeModels seedData;
+    private static final List<ResumeModels> resumeList = new ArrayList<>();
     private final ObjectMapper mapper = new ObjectMapper();
 
     @PostConstruct
     public void init() {
         try (InputStream inputStream = new ClassPathResource("resumeJson/seed.json").getInputStream()) {
-            this.seedData = mapper.readValue(inputStream, ResumeModels.class);
+            ResumeModels resume = mapper.readValue(inputStream, ResumeModels.class);
+            resumeList.clear();
+            resumeList.add(resume);
         } catch (IOException e) {
             throw new RuntimeException("Failed to load seed data from JSON", e);
         }
@@ -29,28 +34,51 @@ public class InMemoryResumeDaoImpl implements ResumeDao {
 
     @Override
     public ResumeModels loadResume() {
-        return seedData;
+        return resumeList.isEmpty() ? null : resumeList.get(0);
     }
 
     @Override
     public ResumeModels loadResumeByPk(String pk) {
-        if (seedData != null && seedData.datiGenerali() != null && seedData.datiGenerali().codiceFiscale() != null && seedData.datiGenerali().codiceFiscale().equals(pk)) {
-            return seedData;
+        for (ResumeModels resume : resumeList) {
+            if (resume != null && resume.datiGenerali() != null &&
+                    resume.datiGenerali().codiceFiscale() != null &&
+                    resume.datiGenerali().codiceFiscale().equals(pk)) {
+                return resume;
+            }
         }
         return null;
     }
 
     @Override
     public List<String> loadAllResumePk() {
-        if (seedData != null && seedData.datiGenerali() != null && seedData.datiGenerali().codiceFiscale() != null) {
-            return List.of(seedData.datiGenerali().codiceFiscale());
+        if (!resumeList.isEmpty()) {
+            return resumeList.stream()
+                    .map(ResumeModels::datiGenerali)
+                    .map(DatiGenerali::codiceFiscale)
+                    .toList();
         }
         return List.of();
     }
 
     @Override
     public void putResume(ResumeModels resume) {
-        // not implemented
+        try {
+            if (resume == null || resume.datiGenerali() == null || resume.datiGenerali().codiceFiscale() == null) {
+                throw new RuntimeException("Codice fiscale non presente");
+            }
+            String codiceFiscale = resume.datiGenerali().codiceFiscale();
+            boolean exists = resumeList.stream()
+                    .anyMatch(res -> res != null &&
+                                            res.datiGenerali() != null &&
+                                            codiceFiscale.equals(res.datiGenerali().codiceFiscale()));
+            if (exists) {
+                throw new DuplicateResumeException("Il Resume con questo Codice Fiscale esiste già a sistema.");
+            }
+            resumeList.add(resume);
+        } catch (RuntimeException ex) {
+            throw ex;
+        } catch (Exception ex) {
+            throw new RuntimeException("Failed to put resume", ex);
+        }
     }
 }
-

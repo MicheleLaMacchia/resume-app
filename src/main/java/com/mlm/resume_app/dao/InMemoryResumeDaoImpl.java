@@ -3,6 +3,7 @@ package com.mlm.resume_app.dao;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mlm.resume_app.model.ResumeModels;
 import jakarta.annotation.PostConstruct;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Repository;
 
@@ -11,7 +12,8 @@ import java.io.InputStream;
 import java.util.List;
 
 @Repository
-public class InMemoryResumeDao implements ResumeDao {
+@Profile("local-inmemory")
+public class InMemoryResumeDaoImpl implements ResumeDao {
 
     private ResumeModels seedData;
     private final ObjectMapper mapper = new ObjectMapper();

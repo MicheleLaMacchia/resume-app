@@ -4,10 +4,9 @@ import jakarta.annotation.PostConstruct;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 
 import com.mlm.resume_app.dao.DynamoResumeDaoImpl;
-import com.mlm.resume_app.dao.InMemoryResumeDao;
+import com.mlm.resume_app.dao.InMemoryResumeDaoImpl;
 import com.mlm.resume_app.model.ResumeModels;
 
 //@Component
@@ -16,9 +15,9 @@ public class DynamoDbInitializer {
     private static final Logger logger = LoggerFactory.getLogger(DynamoDbInitializer.class);
 
     private final DynamoResumeDaoImpl dynamoDao;
-    private final InMemoryResumeDao inMemoryDao;
+    private final InMemoryResumeDaoImpl inMemoryDao;
 
-    public DynamoDbInitializer(DynamoResumeDaoImpl dynamoDao, InMemoryResumeDao inMemoryDao) {
+    public DynamoDbInitializer(DynamoResumeDaoImpl dynamoDao, InMemoryResumeDaoImpl inMemoryDao) {
         this.dynamoDao = dynamoDao;
         this.inMemoryDao = inMemoryDao;
     }

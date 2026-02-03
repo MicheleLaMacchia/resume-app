@@ -1,6 +1,6 @@
 package com.mlm.resume_app.controller;
 
-import com.mlm.resume_app.dao.InMemoryResumeDao;
+import com.mlm.resume_app.dao.InMemoryResumeDaoImpl;
 import com.mlm.resume_app.model.DatiGenerali;
 import com.mlm.resume_app.model.ResumeModels;
 import com.mlm.resume_app.service.ResumeService;
@@ -12,8 +12,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-import java.util.UUID;
 import java.security.SecureRandom;
 
 @RestController
@@ -23,11 +21,11 @@ public class TestController {
     private static final Logger logger = LoggerFactory.getLogger(TestController.class);
 
     private final ResumeService resumeService;
-    private final InMemoryResumeDao inMemoryResumeDao;
+    private final InMemoryResumeDaoImpl inMemoryResumeDaoImpl;
 
-    public TestController(ResumeService resumeService, InMemoryResumeDao inMemoryResumeDao) {
+    public TestController(ResumeService resumeService, InMemoryResumeDaoImpl inMemoryResumeDaoImpl) {
         this.resumeService = resumeService;
-        this.inMemoryResumeDao = inMemoryResumeDao;
+        this.inMemoryResumeDaoImpl = inMemoryResumeDaoImpl;
     }
 
     @GetMapping("/mock")
@@ -40,7 +38,7 @@ public class TestController {
     public ResponseEntity<ResumeModels> createMockResume() {
         logger.info("GET /api/test/create-mock");
 
-        ResumeModels seedData = inMemoryResumeDao.loadResume();
+        ResumeModels seedData = inMemoryResumeDaoImpl.loadResume();
 
         DatiGenerali newDatiGenerali = new DatiGenerali(
             generateRandomCodiceFiscale(),

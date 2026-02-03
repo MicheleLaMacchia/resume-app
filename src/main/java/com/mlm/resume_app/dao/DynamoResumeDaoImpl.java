@@ -6,6 +6,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.springframework.context.annotation.Primary;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -18,6 +19,10 @@ import software.amazon.awssdk.services.dynamodb.model.*;
 
 @Primary
 @Repository
+@Profile({"default",
+          "local",
+          "!local-inmemory"
+})
 public class DynamoResumeDaoImpl implements ResumeDao {
 
     private static final String TABLE_NAME = "ResumeTable";

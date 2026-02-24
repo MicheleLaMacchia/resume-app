@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.security.SecureRandom;
+import java.time.Instant;
 
 @RestController
 @RequestMapping("/api/test")
@@ -61,6 +62,7 @@ public class TestController {
         );
 
         ResumeModels mockResume = new ResumeModels(
+            Instant.now().getEpochSecond(),
             newDatiGenerali,
             seedData.esperienzeLavorative(),
             seedData.istruzioneFormazione(),

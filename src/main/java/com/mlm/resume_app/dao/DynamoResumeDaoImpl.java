@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import java.time.Instant;
 
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
@@ -62,11 +63,7 @@ public class DynamoResumeDaoImpl implements ResumeDao {
 
     @Override
     public ResumeModels loadResume() {
-        // retrieve profile by codiceFiscale
-        // we expect an item with PK = codiceFiscale and SK = PROFILE
-        // fallback: original ROOT/RESUME
-        DatiGenerali dg = null;
-        String cf = null;
+        // Try legacy ROOT/RESUME first for backward compatibility
         try {
             GetItemRequest rootReq = GetItemRequest.builder().tableName(TABLE_NAME)
                     .key(Map.of(PK, AttributeValue.builder().s("ROOT").build(), SK, AttributeValue.builder().s("RESUME").build()))
@@ -82,9 +79,27 @@ public class DynamoResumeDaoImpl implements ResumeDao {
         } catch (Exception ignored) {
         }
 
-        // If no ROOT item, try read by codice fiscale; assume only one resume seeded with InMemory
+        // Try to obtain any codice fiscale from the INDEX (efficient)
         try {
-            // perform a scan to find any PROFILE item and use its codice fiscale
+            QueryRequest idxReq = QueryRequest.builder()
+                    .tableName(TABLE_NAME)
+                    .keyConditionExpression(PK + " = :indexPk")
+                    .expressionAttributeValues(Map.of(":indexPk", AttributeValue.builder().s("INDEX").build()))
+                    .limit(1)
+                    .build();
+            var idxResp = client.query(idxReq);
+            if (idxResp != null && idxResp.count() > 0 && idxResp.items() != null && !idxResp.items().isEmpty()) {
+                var item = idxResp.items().get(0);
+                var cfAv = item.get(SK);
+                if (cfAv != null && cfAv.s() != null) {
+                    return loadResumeByPk(cfAv.s());
+                }
+            }
+        } catch (Exception ignored) {
+        }
+
+        // Fallback: scan any item (legacy behavior)
+        try {
             var scanReq = software.amazon.awssdk.services.dynamodb.model.ScanRequest.builder().tableName(TABLE_NAME).limit(1).build();
             var scanResp = client.scan(scanReq);
             if (scanResp.count() > 0 && scanResp.items() != null) {
@@ -109,13 +124,18 @@ public class DynamoResumeDaoImpl implements ResumeDao {
             return null;
         }
         try {
-            var key = Map.of(PK, AttributeValue.builder().s(pk).build(), SK, AttributeValue.builder().s(PROFILE_SK).build());
-            GetItemRequest req = GetItemRequest.builder().tableName(TABLE_NAME).key(key).build();
-            var resp = client.getItem(req);
-            if (resp == null || resp.item() == null || resp.item().isEmpty()) {
+            QueryRequest req = QueryRequest.builder()
+                    .tableName(TABLE_NAME)
+                    .keyConditionExpression(PK + " = :pk")
+                    .expressionAttributeValues(Map.of(":pk", AttributeValue.builder().s(pk).build()))
+                    .scanIndexForward(false) // newest first
+                    .limit(1)
+                    .build();
+            QueryResponse resp = client.query(req);
+            if (resp == null || resp.count() == 0 || resp.items() == null || resp.items().isEmpty()) {
                 return null;
             }
-            AttributeValue av = resp.item().get(DATA);
+            AttributeValue av = resp.items().get(0).get(DATA);
             if (av == null || av.s() == null) {
                 return null;
             }
@@ -128,23 +148,20 @@ public class DynamoResumeDaoImpl implements ResumeDao {
     @Override
     public List<String> loadAllResumePk() {
         try {
-            ScanRequest scanRequest = ScanRequest.builder()
+            // Use the INDEX items to retrieve all codice fiscale values efficiently
+            QueryRequest req = QueryRequest.builder()
                     .tableName(TABLE_NAME)
-                    .projectionExpression("#pk")
-                    .filterExpression("#sk = :skValue")
-                    .expressionAttributeNames(Map.of(
-                            "#pk", PK,
-                            "#sk", SK
-                    ))
-                    .expressionAttributeValues(Map.of(
-                            ":skValue", AttributeValue.builder().s(PROFILE_SK).build()
-                    ))
+                    .keyConditionExpression(PK + " = :indexPk")
+                    .expressionAttributeValues(Map.of(":indexPk", AttributeValue.builder().s("INDEX").build()))
                     .build();
+            QueryResponse response = client.query(req);
 
-            ScanResponse response = client.scan(scanRequest);
+            if (response == null || response.items() == null) {
+                return List.of();
+            }
 
             return response.items().stream()
-                    .map(item -> item.get(PK).s())
+                    .map(item -> item.get(SK).s())
                     .filter(Objects::nonNull)
                     .collect(Collectors.toList());
 
@@ -156,33 +173,62 @@ public class DynamoResumeDaoImpl implements ResumeDao {
     @Override
     public void putResume(ResumeModels resume) {
         try {
-            String json = mapper.writeValueAsString(resume);
             String codiceFiscale = null;
             if (resume != null && resume.datiGenerali() != null) {
                 codiceFiscale = resume.datiGenerali().codiceFiscale();
             }
-            // if codice fiscale is present, use it as PK; otherwise fallback to ROOT/RESUME
+            // if codice fiscale is present, use it as PK and create a timestamp SK; otherwise fallback to ROOT/RESUME
             Map<String, AttributeValue> item;
             if (codiceFiscale != null && !codiceFiscale.isBlank()) {
+                long epoch = Instant.now().getEpochSecond();
+                // create a new ResumeModels instance with createdAt set
+                ResumeModels updatedResume = new ResumeModels(epoch, resume.datiGenerali(), resume.esperienzeLavorative(), resume.istruzioneFormazione(), resume.competenzeLinguistiche(), resume.competenzeTrasversali(), resume.competenzeTecnologiche(), resume.competenzeOrganizzative(), resume.competenzeFunzionali());
+                String json = mapper.writeValueAsString(updatedResume);
+
+                String timestamp = String.valueOf(epoch);
                 item = Map.of(
                         PK, AttributeValue.builder().s(codiceFiscale).build(),
-                        SK, AttributeValue.builder().s(PROFILE_SK).build(),
+                        SK, AttributeValue.builder().s(timestamp).build(),
                         DATA, AttributeValue.builder().s(json).build()
                 );
+
+                // index item to allow efficient listing of all CFs
+                Map<String, AttributeValue> indexItem = Map.of(
+                        PK, AttributeValue.builder().s("INDEX").build(),
+                        SK, AttributeValue.builder().s(codiceFiscale).build(),
+                        DATA, AttributeValue.builder().s("{}" ).build()
+                );
+
+                // attempt an atomic transaction: put resume + put index (index put is conditional)
+                Put resumePut = Put.builder().tableName(TABLE_NAME).item(item).build();
+                Put indexPut = Put.builder().tableName(TABLE_NAME).item(indexItem).conditionExpression("attribute_not_exists(" + PK + ")").build();
+
+                TransactWriteItemsRequest txReq = TransactWriteItemsRequest.builder()
+                        .transactItems(TransactWriteItem.builder().put(resumePut).build(),
+                                TransactWriteItem.builder().put(indexPut).build())
+                        .build();
+                try {
+                    client.transactWriteItems(txReq);
+                } catch (TransactionCanceledException e) {
+                    // index likely already exists; fallback to single put of resume
+                    PutItemRequest req = PutItemRequest.builder().tableName(TABLE_NAME).item(item).build();
+                    client.putItem(req);
+                }
+
             } else {
+                String jsonRoot = mapper.writeValueAsString(resume);
                 item = Map.of(
                         PK, AttributeValue.builder().s("ROOT").build(),
                         SK, AttributeValue.builder().s("RESUME").build(),
-                        DATA, AttributeValue.builder().s(json).build()
+                        DATA, AttributeValue.builder().s(jsonRoot).build()
                 );
+                PutItemRequest req = PutItemRequest.builder()
+                        .tableName(TABLE_NAME)
+                        .item(item)
+                        .conditionExpression("attribute_not_exists(" + PK + ")")
+                        .build();
+                client.putItem(req);
             }
-            PutItemRequest req = PutItemRequest.builder()
-                    .tableName(TABLE_NAME)
-                    .item(item)
-                    .conditionExpression("attribute_not_exists(" + PK + ")")
-                    .build();
-
-            client.putItem(req);
         } catch (ConditionalCheckFailedException e) {
             throw new DuplicateResumeException("Il Resume con questo Codice Fiscale esiste già a sistema.");
         } catch (Exception ex) {

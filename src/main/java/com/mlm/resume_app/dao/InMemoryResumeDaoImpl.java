@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.time.Instant;
 
 @Repository
 @Profile("local-inmemory")
@@ -74,7 +75,9 @@ public class InMemoryResumeDaoImpl implements ResumeDao {
             if (exists) {
                 throw new DuplicateResumeException("Il Resume con questo Codice Fiscale esiste già a sistema.");
             }
-            resumeList.add(resume);
+            long epoch = Instant.now().getEpochSecond();
+            ResumeModels updatedResume = new ResumeModels(epoch, resume.datiGenerali(), resume.esperienzeLavorative(), resume.istruzioneFormazione(), resume.competenzeLinguistiche(), resume.competenzeTrasversali(), resume.competenzeTecnologiche(), resume.competenzeOrganizzative(), resume.competenzeFunzionali());
+            resumeList.add(updatedResume);
         } catch (RuntimeException ex) {
             throw ex;
         } catch (Exception ex) {

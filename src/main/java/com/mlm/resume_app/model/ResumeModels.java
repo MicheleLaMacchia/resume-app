@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import java.util.List;
 
 public record ResumeModels(
+    Long createdAt,
     @NotNull
     @Valid
     DatiGenerali datiGenerali,

@@ -85,4 +85,22 @@ public interface ResumeService {
 
     // Retrieve list of version sks for a pk (newest first)
     java.util.List<String> getResumeVersionsByPk(String pk);
+
+    // Update working experiences replacing the section in the latest resume and create a new version
+    ResumeModels updateWorkingExperienceByPk(String pk, java.util.List<com.mlm.resume_app.model.EsperienzaLavorativa> experiences);
+
+    // Update education/training replacing the section in the latest resume and create a new version
+    ResumeModels updateEducationByPk(String pk, java.util.List<com.mlm.resume_app.model.IstruzioneFormazione> education);
+
+    // Update language skills
+    ResumeModels updateLanguageSkillsByPk(String pk, java.util.List<com.mlm.resume_app.model.CompetenzaLinguistica> languages);
+
+    // Update competences (soft, technical, organizational, functional)
+    ResumeModels updateSoftSkillsByPk(String pk, java.util.List<com.mlm.resume_app.model.Competenza> softSkills);
+
+    ResumeModels updateTechnicalSkillsByPk(String pk, java.util.List<com.mlm.resume_app.model.Competenza> technicalSkills);
+
+    ResumeModels updateOrganizationalSkillsByPk(String pk, java.util.List<com.mlm.resume_app.model.Competenza> organizationalSkills);
+
+    ResumeModels updateFunctionalSkillsByPk(String pk, java.util.List<com.mlm.resume_app.model.Competenza> functionalSkills);
 }

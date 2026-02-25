@@ -82,6 +82,55 @@ public class ResumeController {
         return ResponseEntity.ok(item);
     }
 
+    @PutMapping("/working-experience/{pk}")
+    public ResponseEntity<ResumeModels> updateWorkingExperience(@PathVariable("pk") String pk, @RequestBody List<EsperienzaLavorativa> experiences) {
+        logger.info("PUT /api/working-experience/{}", pk);
+        ResumeModels saved = resumeService.updateWorkingExperienceByPk(pk, experiences);
+        return ResponseEntity.ok(saved);
+    }
+
+    @PutMapping("/education-training/{pk}")
+    public ResponseEntity<ResumeModels> updateEducationTraining(@PathVariable("pk") String pk, @RequestBody List<IstruzioneFormazione> education) {
+        logger.info("PUT /api/education-training/{}", pk);
+        ResumeModels saved = resumeService.updateEducationByPk(pk, education);
+        return ResponseEntity.ok(saved);
+    }
+
+    @PutMapping("/language-skills/{pk}")
+    public ResponseEntity<ResumeModels> updateLanguageSkills(@PathVariable("pk") String pk, @RequestBody List<CompetenzaLinguistica> languages) {
+        logger.info("PUT /api/language-skills/{}", pk);
+        ResumeModels saved = resumeService.updateLanguageSkillsByPk(pk, languages);
+        return ResponseEntity.ok(saved);
+    }
+
+    @PutMapping("/soft-skills/{pk}")
+    public ResponseEntity<ResumeModels> updateSoftSkills(@PathVariable("pk") String pk, @RequestBody List<Competenza> softSkills) {
+        logger.info("PUT /api/soft-skills/{}", pk);
+        ResumeModels saved = resumeService.updateSoftSkillsByPk(pk, softSkills);
+        return ResponseEntity.ok(saved);
+    }
+
+    @PutMapping("/technical-skills/{pk}")
+    public ResponseEntity<ResumeModels> updateTechnicalSkills(@PathVariable("pk") String pk, @RequestBody List<Competenza> technicalSkills) {
+        logger.info("PUT /api/technical-skills/{}", pk);
+        ResumeModels saved = resumeService.updateTechnicalSkillsByPk(pk, technicalSkills);
+        return ResponseEntity.ok(saved);
+    }
+
+    @PutMapping("/organizational-skills/{pk}")
+    public ResponseEntity<ResumeModels> updateOrganizationalSkills(@PathVariable("pk") String pk, @RequestBody List<Competenza> organizationalSkills) {
+        logger.info("PUT /api/organizational-skills/{}", pk);
+        ResumeModels saved = resumeService.updateOrganizationalSkillsByPk(pk, organizationalSkills);
+        return ResponseEntity.ok(saved);
+    }
+
+    @PutMapping("/functional-skills/{pk}")
+    public ResponseEntity<ResumeModels> updateFunctionalSkills(@PathVariable("pk") String pk, @RequestBody List<Competenza> functionalSkills) {
+        logger.info("PUT /api/functional-skills/{}", pk);
+        ResumeModels saved = resumeService.updateFunctionalSkillsByPk(pk, functionalSkills);
+        return ResponseEntity.ok(saved);
+    }
+
     @GetMapping("/education-training/{pk}")
     public List<IstruzioneFormazione> getEducationTraining(@PathVariable("pk") String pk) {
         logger.info("GET /api/education-training/{}", pk);

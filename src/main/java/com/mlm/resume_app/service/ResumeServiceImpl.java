@@ -393,7 +393,12 @@ public class ResumeServiceImpl implements ResumeService {
     public ResumeModels saveResume(ResumeModels resume) {
         logger.info("[START] saveResume :: resume: {}", resume);
         dao.putResume(resume);
-        logger.info("Resume saved successfully for pk: {}", resume.datiGenerali().codiceFiscale());
+        logger.info("Resume saved successfully for pk: {}", resume.datiGenerali() != null ? resume.datiGenerali().codiceFiscale() : "ROOT");
+        // After saving, return the persisted latest resume for the codice fiscale (so createdAt/sk is populated)
+        if (resume != null && resume.datiGenerali() != null && resume.datiGenerali().codiceFiscale() != null) {
+            return dao.loadResumeByPk(resume.datiGenerali().codiceFiscale());
+        }
+        // fallback to returning the original object
         return resume;
     }
 
@@ -418,5 +423,163 @@ public class ResumeServiceImpl implements ResumeService {
         logger.info("[START] getResumeVersionsByPk :: pk: {}", pk);
         return dao.loadResumeVersions(pk);
     }
+
+    @Override
+    public ResumeModels updateWorkingExperienceByPk(String pk, java.util.List<EsperienzaLavorativa> experiences) {
+        logger.info("[START] updateWorkingExperienceByPk :: pk: {}", pk);
+        var current = dao.loadResumeByPk(pk);
+        if (current == null) {
+            logger.warn("Resume not found for pk: {}", pk);
+            throw new ResourceNotFoundException("Resume non trovato per pk: " + pk);
+        }
+        // create new ResumeModels preserving other sections
+        ResumeModels updated = new ResumeModels(
+                null,
+                current.datiGenerali(),
+                experiences,
+                current.istruzioneFormazione(),
+                current.competenzeLinguistiche(),
+                current.competenzeTrasversali(),
+                current.competenzeTecnologiche(),
+                current.competenzeOrganizzative(),
+                current.competenzeFunzionali()
+        );
+        // saveResume will call dao.putResume and return the persisted resume with createdAt populated
+        ResumeModels saved = this.saveResume(updated);
+        return saved;
+    }
+
+    @Override
+    public ResumeModels updateEducationByPk(String pk, java.util.List<IstruzioneFormazione> education) {
+        logger.info("[START] updateEducationByPk :: pk: {}", pk);
+        var current = dao.loadResumeByPk(pk);
+        if (current == null) {
+            logger.warn("Resume not found for pk: {}", pk);
+            throw new ResourceNotFoundException("Resume non trovato per pk: " + pk);
+        }
+        ResumeModels updated = new ResumeModels(
+                null,
+                current.datiGenerali(),
+                current.esperienzeLavorative(),
+                education,
+                current.competenzeLinguistiche(),
+                current.competenzeTrasversali(),
+                current.competenzeTecnologiche(),
+                current.competenzeOrganizzative(),
+                current.competenzeFunzionali()
+        );
+        return this.saveResume(updated);
+    }
+
+    @Override
+    public ResumeModels updateLanguageSkillsByPk(String pk, java.util.List<CompetenzaLinguistica> languages) {
+        logger.info("[START] updateLanguageSkillsByPk :: pk: {}", pk);
+        var current = dao.loadResumeByPk(pk);
+        if (current == null) {
+            logger.warn("Resume not found for pk: {}", pk);
+            throw new ResourceNotFoundException("Resume non trovato per pk: " + pk);
+        }
+        ResumeModels updated = new ResumeModels(
+                null,
+                current.datiGenerali(),
+                current.esperienzeLavorative(),
+                current.istruzioneFormazione(),
+                languages,
+                current.competenzeTrasversali(),
+                current.competenzeTecnologiche(),
+                current.competenzeOrganizzative(),
+                current.competenzeFunzionali()
+        );
+        return this.saveResume(updated);
+    }
+
+    @Override
+    public ResumeModels updateSoftSkillsByPk(String pk, java.util.List<Competenza> softSkills) {
+        logger.info("[START] updateSoftSkillsByPk :: pk: {}", pk);
+        var current = dao.loadResumeByPk(pk);
+        if (current == null) {
+            logger.warn("Resume not found for pk: {}", pk);
+            throw new ResourceNotFoundException("Resume non trovato per pk: " + pk);
+        }
+        ResumeModels updated = new ResumeModels(
+                null,
+                current.datiGenerali(),
+                current.esperienzeLavorative(),
+                current.istruzioneFormazione(),
+                current.competenzeLinguistiche(),
+                softSkills,
+                current.competenzeTecnologiche(),
+                current.competenzeOrganizzative(),
+                current.competenzeFunzionali()
+        );
+        return this.saveResume(updated);
+    }
+
+    @Override
+    public ResumeModels updateTechnicalSkillsByPk(String pk, java.util.List<Competenza> technicalSkills) {
+        logger.info("[START] updateTechnicalSkillsByPk :: pk: {}", pk);
+        var current = dao.loadResumeByPk(pk);
+        if (current == null) {
+            logger.warn("Resume not found for pk: {}", pk);
+            throw new ResourceNotFoundException("Resume non trovato per pk: " + pk);
+        }
+        ResumeModels updated = new ResumeModels(
+                null,
+                current.datiGenerali(),
+                current.esperienzeLavorative(),
+                current.istruzioneFormazione(),
+                current.competenzeLinguistiche(),
+                current.competenzeTrasversali(),
+                technicalSkills,
+                current.competenzeOrganizzative(),
+                current.competenzeFunzionali()
+        );
+        return this.saveResume(updated);
+    }
+
+    @Override
+    public ResumeModels updateOrganizationalSkillsByPk(String pk, java.util.List<Competenza> organizationalSkills) {
+        logger.info("[START] updateOrganizationalSkillsByPk :: pk: {}", pk);
+        var current = dao.loadResumeByPk(pk);
+        if (current == null) {
+            logger.warn("Resume not found for pk: {}", pk);
+            throw new ResourceNotFoundException("Resume non trovato per pk: " + pk);
+        }
+        ResumeModels updated = new ResumeModels(
+                null,
+                current.datiGenerali(),
+                current.esperienzeLavorative(),
+                current.istruzioneFormazione(),
+                current.competenzeLinguistiche(),
+                current.competenzeTrasversali(),
+                current.competenzeTecnologiche(),
+                organizationalSkills,
+                current.competenzeFunzionali()
+        );
+        return this.saveResume(updated);
+    }
+
+    @Override
+    public ResumeModels updateFunctionalSkillsByPk(String pk, java.util.List<Competenza> functionalSkills) {
+        logger.info("[START] updateFunctionalSkillsByPk :: pk: {}", pk);
+        var current = dao.loadResumeByPk(pk);
+        if (current == null) {
+            logger.warn("Resume not found for pk: {}", pk);
+            throw new ResourceNotFoundException("Resume non trovato per pk: " + pk);
+        }
+        ResumeModels updated = new ResumeModels(
+                null,
+                current.datiGenerali(),
+                current.esperienzeLavorative(),
+                current.istruzioneFormazione(),
+                current.competenzeLinguistiche(),
+                current.competenzeTrasversali(),
+                current.competenzeTecnologiche(),
+                current.competenzeOrganizzative(),
+                functionalSkills
+        );
+        return this.saveResume(updated);
+    }
 }
+
 

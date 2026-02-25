@@ -61,6 +61,26 @@
         .skill-description {
             margin-left: 15px;
         }
+
+        /* Footer styling moved into head to avoid being printed as text in body */
+        @page {
+          size: A4;
+          margin: 20mm 15mm 30mm 15mm; /* bottom margin reserves space for footer */
+        }
+        /* Footer rendered as normal block at end of document to avoid repetition and overlap.
+           The bottom page margin prevents overlapping content. */
+        footer#myFooter {
+          display: block;
+          clear: both;
+          margin-top: 12mm;
+          color: #0056b3;
+          font-weight: bold;
+        }
+        .footer-inner {
+          border-top:4px solid #0056b3;
+          padding-top:6px;
+          text-align:center;
+        }
     </style>
 </head>
 <body>
@@ -76,6 +96,8 @@
         <strong>Indirizzo:</strong> <span th:text="${resume.datiGenerali.indirizzoResidenza}">Via Giuseppe Lipparini, 13, 00143, Roma, Italia (Abitazione)</span>
     </div>
 </div>
+
+
 
 <div class="section">
     <div class="section-title">ESPERIENZA LAVORATIVA</div>
@@ -145,5 +167,9 @@
     </div>
 </div>
 
+
+<footer id="myFooter">
+  <div class="footer-inner" th:text="${footerText}">versione CV del: N/D</div>
+</footer>
 </body>
 </html>

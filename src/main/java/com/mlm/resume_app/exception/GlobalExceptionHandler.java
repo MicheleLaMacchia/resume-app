@@ -48,6 +48,13 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(errors);
     }
 
+    @ExceptionHandler(com.mlm.resume_app.exception.PdfGenerationException.class)
+    public ResponseEntity<ErrorResponse> handlePdfGeneration(com.mlm.resume_app.exception.PdfGenerationException ex, HttpServletRequest request) {
+        logger.error("PDF generation failed: {} - path: {}", ex.getMessage(), request.getRequestURI(), ex);
+        var body = new ErrorResponse(Instant.now(), HttpStatus.INTERNAL_SERVER_ERROR.value(), "PDF Generation Error", ex.getMessage(), request.getRequestURI());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(body);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGeneric(Exception ex, HttpServletRequest request) {
         logger.error("Unhandled exception for path {}", request.getRequestURI(), ex);

@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.Map; 
 
 import java.time.Instant;
+import com.mlm.resume_app.exception.PdfGenerationException;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -48,8 +49,8 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(errors);
     }
 
-    @ExceptionHandler(com.mlm.resume_app.exception.PdfGenerationException.class)
-    public ResponseEntity<ErrorResponse> handlePdfGeneration(com.mlm.resume_app.exception.PdfGenerationException ex, HttpServletRequest request) {
+    @ExceptionHandler(PdfGenerationException.class)
+    public ResponseEntity<ErrorResponse> handlePdfGeneration(PdfGenerationException ex, HttpServletRequest request) {
         logger.error("PDF generation failed: {} - path: {}", ex.getMessage(), request.getRequestURI(), ex);
         var body = new ErrorResponse(Instant.now(), HttpStatus.INTERNAL_SERVER_ERROR.value(), "PDF Generation Error", ex.getMessage(), request.getRequestURI());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(body);

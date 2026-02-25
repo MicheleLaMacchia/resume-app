@@ -1,8 +1,11 @@
 package com.mlm.resume_app.controller;
 
+import com.mlm.resume_app.exception.PdfGenerationException;
+import com.mlm.resume_app.exception.ResourceNotFoundException;
 import com.mlm.resume_app.model.ResumeModels;
 import com.mlm.resume_app.service.PdfGenerationService;
 import com.mlm.resume_app.service.ResumeService;
+import com.mlm.resume_app.service.TemplateService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
@@ -25,9 +28,9 @@ public class PrintController {
 
     private final ResumeService resumeService;
     private final PdfGenerationService pdfGenerationService;
-    private final com.mlm.resume_app.service.TemplateService templateService;
+    private final TemplateService templateService;
 
-    public PrintController(ResumeService resumeService, PdfGenerationService pdfGenerationService, com.mlm.resume_app.service.TemplateService templateService) {
+    public PrintController(ResumeService resumeService, PdfGenerationService pdfGenerationService, TemplateService templateService) {
         this.resumeService = resumeService;
         this.pdfGenerationService = pdfGenerationService;
         this.templateService = templateService;
@@ -45,10 +48,10 @@ public class PrintController {
             headers.setContentDispositionFormData("attachment", "resume_" + pk + ".pdf");
 
             return new ResponseEntity<>(pdfBytes, headers, HttpStatus.OK);
-        } catch (com.mlm.resume_app.exception.ResourceNotFoundException e) {
+        } catch (ResourceNotFoundException e) {
             // Let the global exception handler map this to 404
             throw e;
-        } catch (com.mlm.resume_app.exception.PdfGenerationException pex) {
+        } catch (PdfGenerationException pex) {
             // Let GlobalExceptionHandler handle PdfGenerationException
             throw pex;
         } catch (Exception e) {

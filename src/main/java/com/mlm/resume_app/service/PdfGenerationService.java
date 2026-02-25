@@ -32,20 +32,26 @@ public class PdfGenerationService {
             if (resume == null) {
                 throw new PdfGenerationException("Resume is null");
             }
-            if (templateId == null || templateId.trim().isEmpty()) {
-                throw new PdfGenerationException("TemplateId is required");
+            // normalize and treat missing/invalid template ids as not found
+            if (templateId == null) {
+                throw new com.mlm.resume_app.exception.ResourceNotFoundException("Template non trovato: null");
+            }
+            templateId = templateId.trim();
+            if (templateId.isEmpty()) {
+                throw new com.mlm.resume_app.exception.ResourceNotFoundException("Template non trovato: ");
             }
 
-            // basic validation to avoid path traversal
+            // basic validation to avoid path traversal - invalid ids are considered not found
             if (!templateId.matches("[A-Za-z0-9_-]+")) {
-                throw new PdfGenerationException("Invalid templateId: " + templateId);
+                throw new com.mlm.resume_app.exception.ResourceNotFoundException("Template non trovato: " + templateId);
             }
 
             // ensure template exists in classpath under CVTemplates
             org.springframework.core.io.support.PathMatchingResourcePatternResolver resolver = new org.springframework.core.io.support.PathMatchingResourcePatternResolver();
             org.springframework.core.io.Resource resource = resolver.getResource("classpath:CVTemplates/" + templateId + ".html");
             if (resource == null || !resource.exists()) {
-                throw new PdfGenerationException("Template not found: " + templateId);
+                // map missing template to resource not found so global handler returns 404
+                throw new com.mlm.resume_app.exception.ResourceNotFoundException("Template non trovato: " + templateId);
             }
 
             Context context = new Context();
@@ -84,6 +90,10 @@ public class PdfGenerationService {
             // rethrow custom exceptions as is
             logger.error("PdfGenerationException: {}", pex.getMessage(), pex);
             throw pex;
+        } catch (com.mlm.resume_app.exception.ResourceNotFoundException rnfe) {
+            // let global handler map this to 404
+            logger.warn("Resource not found while generating PDF: {}", rnfe.getMessage());
+            throw rnfe;
         } catch (Exception e) {
             logger.error("Unexpected error while generating PDF", e);
             throw new PdfGenerationException("Unexpected error while generating PDF: " + e.getMessage(), e);

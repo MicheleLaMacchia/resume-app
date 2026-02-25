@@ -25,10 +25,12 @@ public class PrintController {
 
     private final ResumeService resumeService;
     private final PdfGenerationService pdfGenerationService;
+    private final com.mlm.resume_app.service.TemplateService templateService;
 
-    public PrintController(ResumeService resumeService, PdfGenerationService pdfGenerationService) {
+    public PrintController(ResumeService resumeService, PdfGenerationService pdfGenerationService, com.mlm.resume_app.service.TemplateService templateService) {
         this.resumeService = resumeService;
         this.pdfGenerationService = pdfGenerationService;
+        this.templateService = templateService;
     }
 
     @GetMapping("/pdf/{pk}")
@@ -58,15 +60,7 @@ public class PrintController {
     @GetMapping("/templates")
     public ResponseEntity<java.util.List<String>> listAvailableTemplates() {
         try {
-            PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
-            Resource[] resources = resolver.getResources("classpath:CVTemplates/*.html");
-            java.util.List<String> templates = new java.util.ArrayList<>();
-            for (Resource r : resources) {
-                String filename = r.getFilename();
-                if (filename != null && filename.endsWith(".html")) {
-                    templates.add(filename.substring(0, filename.length() - 5));
-                }
-            }
+            java.util.List<String> templates = templateService.listTemplateNames();
             return ResponseEntity.ok(templates);
         } catch (Exception e) {
             logger.error("Failed to list templates", e);

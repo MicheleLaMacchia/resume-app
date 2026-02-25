@@ -2,108 +2,81 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8"/>
-    <title>Resume</title>
+    <title>Resume - Alternative</title>
     <style>
+        /* Alternative styling: serif look with sea-green accents */
         body {
-            font-family: Arial, sans-serif;
-            font-size: 10pt;
-            color: #333;
+            font-family: Georgia, 'Times New Roman', serif;
+            font-size: 11pt;
+            color: #222;
+            line-height: 1.35;
         }
         .header {
             padding-bottom: 10px;
-            border-bottom: 2px solid #0056b3;
-            margin-bottom: 20px;
+            border-bottom: 2px solid #2E8B57; /* sea green */
+            margin-bottom: 18px;
         }
         .header h1 {
-            font-size: 24pt;
+            font-size: 26pt;
             margin: 0;
-            color: #0056b3;
+            color: #2E8B57;
         }
         .contact-info {
-            margin-top: 10px;
+            margin-top: 8px;
+            font-size: 10pt;
+            color: #444;
         }
         .section {
-            margin-bottom: 20px;
+            margin-bottom: 18px;
         }
         .section-title {
-            font-size: 14pt;
+            font-size: 13pt;
             font-weight: bold;
-            color: #0056b3;
-            border-bottom: 1px solid #ccc;
-            padding-bottom: 5px;
+            color: #2E8B57;
+            border-bottom: 1px dashed #d0e9df;
+            padding-bottom: 6px;
             margin-bottom: 10px;
         }
         .job {
-            margin-bottom: 15px;
+            margin-bottom: 12px;
         }
         .job-title {
             font-weight: bold;
+            color: #163822;
         }
         .job-period {
             font-style: italic;
-            color: #555;
-        }
-        .skill {
-            margin-bottom: 10px;
-        }
-        .skill-name {
-            font-weight: bold;
-            margin-bottom: 3px;
+            color: #666;
         }
         .skill-details {
             margin-left: 15px;
-            font-size: 0.9em;
-        }
-        .skill-detail {
-            margin-bottom: 2px;
-            bold;
-        }
-        .skill-description {
-            margin-left: 15px;
+            font-size: 0.95em;
         }
 
-        /* Footer styling moved into head to avoid being printed as text in body */
-        @page {
-          size: A4;
-          margin: 20mm 15mm 30mm 15mm; /* bottom margin reserves space for footer */
-        }
-        /* Footer rendered as normal block at end of document to avoid repetition and overlap.
-           The bottom page margin prevents overlapping content. */
-        footer#myFooter {
-          display: block;
-          clear: both;
-          margin-top: 12mm;
-          color: #0056b3;
-          font-weight: bold;
-        }
-        .footer-inner {
-          border-top:4px solid #0056b3;
-          padding-top:6px;
-          text-align:center;
-        }
+
+
+        /* Small utility tweaks */
+        .section-title small { color: #777; font-weight: normal; }
     </style>
 </head>
 <body>
 
 <div class="header">
-    <h1 th:text="${resume.datiGenerali.nome} + ' ' + ${resume.datiGenerali.cognome}">Michele La Macchia</h1>
+    <h1 th:text="${resume.datiGenerali.nome} + ' ' + ${resume.datiGenerali.cognome}">Nome Cognome</h1>
     <div class="contact-info">
         <strong>Data di nascita:</strong> <span th:text="${resume.datiGenerali.dataDiNascita}">27/01/1991</span> |
         <strong>Luogo di nascita:</strong> <span th:text="${resume.datiGenerali.luogoDiNascita}">Roma, Italia</span> |
         <strong>Nazionalità:</strong> <span th:text="${resume.datiGenerali.nazionalita}">Italiana</span><br/>
-        <strong>Numero di telefono:</strong> <span th:text="${resume.datiGenerali.telefono}">(+39) 3336517765</span> |
-        <strong>Indirizzo e-mail:</strong> <span th:text="${resume.datiGenerali.email}">michele.lamacchia91@gmail.com</span><br/>
-        <strong>Indirizzo:</strong> <span th:text="${resume.datiGenerali.indirizzoResidenza}">Via Giuseppe Lipparini, 13, 00143, Roma, Italia (Abitazione)</span>
+        <strong>Telefono:</strong> <span th:text="${resume.datiGenerali.telefono}">(+39) 3336517765</span> |
+        <strong>Email:</strong> <span th:text="${resume.datiGenerali.email}">michele.lamacchia91@gmail.com</span>
     </div>
 </div>
-
-
 
 <div class="section">
     <div class="section-title">ESPERIENZA LAVORATIVA</div>
     <div th:each="exp : ${resume.esperienzeLavorative}" class="job">
-        <div class="job-title" th:text="${exp.ruolo} + ' - ' + ${exp.azienda}">SOFTWARE DEVELOPMENT SPECIALIST – ENGINEERING INGEGNERIA INFORMATICA</div>
-        <div class="job-period" th:text="${exp.dataInizio} + ' - ' + ${exp.dataFine}">18/09/2023 - Attuale - ROMA, ITALIA</div>
+        <div class="job-title" th:text="${exp.ruolo} + ' - ' + ${exp.azienda}">Ruolo - Azienda</div>
+        <div class="job-period" th:text="${exp.dataInizio} + ' - ' + ${exp.dataFine}">Periodo</div>
         <p th:text="${exp.descrizione}">Descrizione dell'esperienza...</p>
     </div>
 </div>
@@ -111,8 +84,8 @@
 <div class="section">
     <div class="section-title">ISTRUZIONE E FORMAZIONE</div>
     <div th:each="edu : ${resume.istruzioneFormazione}" class="job">
-        <div class="job-title" th:text="${edu.enteRilascio} + ' - ' + ${edu.titolo}">ASSOCIATE CLOUD ENGINEER CERTIFICATION Google Cloud</div>
-        <div class="job-period" th:text="${edu.dataInizio} + ' - ' + ${edu.dataFine}">22/12/2025 - 22/12/2028</div>
+        <div class="job-title" th:text="${edu.enteRilascio} + ' - ' + ${edu.titolo}">Istituto - Titolo</div>
+        <div class="job-period" th:text="${edu.dataInizio} + ' - ' + ${edu.dataFine}">Periodo</div>
         <p th:text="${edu.descrizione}">Descrizione della formazione...</p>
     </div>
 </div>
@@ -131,7 +104,7 @@
     </div>
 </div>
 
-<!-- Sezione Competenze Trasversali -->
+<!-- Sezioni rimanenti -->
 <div class="section">
     <div class="section-title">COMPETENZE TRASVERSALI</div>
     <div th:each="skill : ${resume.competenzeTrasversali}" class="job">
@@ -140,7 +113,6 @@
     </div>
 </div>
 
-<!-- Sezione Competenze Tecnologiche -->
 <div class="section">
     <div class="section-title">COMPETENZE TECNOLOGICHE</div>
     <div th:each="skill : ${resume.competenzeTecnologiche}" class="job">
@@ -149,7 +121,6 @@
     </div>
 </div>
 
-<!-- Sezione Competenze Organizzative -->
 <div class="section">
     <div class="section-title">COMPETENZE ORGANIZZATIVE</div>
     <div th:each="skill : ${resume.competenzeOrganizzative}" class="job">
@@ -158,7 +129,6 @@
     </div>
 </div>
 
-<!-- Sezione Competenze Funzionali -->
 <div class="section">
     <div class="section-title">COMPETENZE FUNZIONALI</div>
     <div th:each="skill : ${resume.competenzeFunzionali}" class="job">
@@ -166,7 +136,6 @@
         <p th:text="${skill.descrizione}">Descrizione della competenza</p>
     </div>
 </div>
-
 
 </body>
 </html>

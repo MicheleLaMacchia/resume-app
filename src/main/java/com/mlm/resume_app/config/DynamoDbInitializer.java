@@ -5,6 +5,7 @@ import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.mlm.resume_app.dao.DynamoResumeDaoImpl;
 import com.mlm.resume_app.dao.InMemoryResumeDaoImpl;
@@ -18,7 +19,7 @@ public class DynamoDbInitializer {
     private final DynamoResumeDaoImpl dynamoDao;
     private final InMemoryResumeDaoImpl inMemoryDao;
 
-    public DynamoDbInitializer(DynamoResumeDaoImpl dynamoDao, InMemoryResumeDaoImpl inMemoryDao) {
+    public DynamoDbInitializer(DynamoResumeDaoImpl dynamoDao, @Autowired(required = false) InMemoryResumeDaoImpl inMemoryDao) {
         this.dynamoDao = dynamoDao;
         this.inMemoryDao = inMemoryDao;
     }
@@ -29,13 +30,18 @@ public class DynamoDbInitializer {
         dynamoDao.createTableIfNotExists();
         ResumeModels existing = dynamoDao.loadResume();
         if (existing == null) {
-            logger.info("No resume found in DynamoDB - seeding initial data");
-            ResumeModels seed = inMemoryDao.loadResume();
+            logger.info("No resume found in DynamoDB - attempting to seed initial data");
+            ResumeModels seed = null;
+            if (inMemoryDao != null) {
+                seed = inMemoryDao.loadResume();
+            } else {
+                logger.warn("InMemoryResumeDaoImpl bean not present for this profile - skipping automatic seeding");
+            }
             if (seed != null) {
                 dynamoDao.putResume(seed);
                 logger.info("Seeded initial resume into DynamoDB");
             } else {
-                logger.warn("InMemoryResumeDao returned null - nothing to seed");
+                logger.warn("No seed data available - nothing to seed");
             }
         } else {
             logger.info("Resume already exists in DynamoDB - skipping seed");

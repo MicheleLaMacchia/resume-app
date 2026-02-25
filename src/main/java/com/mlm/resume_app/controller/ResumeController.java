@@ -63,7 +63,6 @@ public class ResumeController {
 
     // The following per-card endpoints are kept for backward compatibility but commented out to reduce redundant calls from the frontend.
     // When the dashboard loads, frontend now requests the full resume (latest) and distributes data to cards locally.
-    /*
     @GetMapping("/personal-data/{pk}")
     public DatiGenerali getPersonalData(@PathVariable("pk") String pk) {
         logger.info("GET /api/personal-data/{}", pk);
@@ -160,6 +159,5 @@ public class ResumeController {
         var item = resumeService.getFunzionaleByPkAndIndex(pk, index);
         return ResponseEntity.ok(item);
     }
-    */
 
 }

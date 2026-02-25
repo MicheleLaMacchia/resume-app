@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.security.SecureRandom;
 import java.time.Instant;
@@ -24,7 +25,7 @@ public class TestController {
     private final ResumeService resumeService;
     private final InMemoryResumeDaoImpl inMemoryResumeDaoImpl;
 
-    public TestController(ResumeService resumeService, InMemoryResumeDaoImpl inMemoryResumeDaoImpl) {
+    public TestController(ResumeService resumeService, @Autowired(required = false) InMemoryResumeDaoImpl inMemoryResumeDaoImpl) {
         this.resumeService = resumeService;
         this.inMemoryResumeDaoImpl = inMemoryResumeDaoImpl;
     }
@@ -38,6 +39,11 @@ public class TestController {
     @GetMapping("/create-mock")
     public ResponseEntity<ResumeModels> createMockResume() {
         logger.info("GET /api/test/create-mock");
+
+        if (inMemoryResumeDaoImpl == null) {
+            logger.warn("InMemoryResumeDaoImpl bean not present - cannot create mock resume");
+            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).build();
+        }
 
         ResumeModels seedData = inMemoryResumeDaoImpl.loadResume();
 

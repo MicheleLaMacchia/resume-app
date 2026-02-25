@@ -40,14 +40,18 @@ public class InMemoryResumeDaoImpl implements ResumeDao {
 
     @Override
     public ResumeModels loadResumeByPk(String pk) {
+        // return the most recent resume (highest createdAt) for the given pk
+        ResumeModels latest = null;
         for (ResumeModels resume : resumeList) {
             if (resume != null && resume.datiGenerali() != null &&
                     resume.datiGenerali().codiceFiscale() != null &&
                     resume.datiGenerali().codiceFiscale().equals(pk)) {
-                return resume;
+                if (latest == null || (resume.createdAt() != null && resume.createdAt() > latest.createdAt())) {
+                    latest = resume;
+                }
             }
         }
-        return null;
+        return latest;
     }
 
     @Override
@@ -56,9 +60,44 @@ public class InMemoryResumeDaoImpl implements ResumeDao {
             return resumeList.stream()
                     .map(ResumeModels::datiGenerali)
                     .map(DatiGenerali::codiceFiscale)
+                    .distinct()
                     .toList();
         }
         return List.of();
+    }
+
+    @Override
+    public ResumeModels loadResumeByPkAndSk(String pk, String sk) {
+        if (pk == null || pk.isBlank() || sk == null || sk.isBlank()) {
+            return null;
+        }
+        try {
+            long s = Long.parseLong(sk);
+            for (ResumeModels resume : resumeList) {
+                if (resume != null && resume.datiGenerali() != null &&
+                        resume.datiGenerali().codiceFiscale() != null &&
+                        resume.datiGenerali().codiceFiscale().equals(pk) &&
+                        resume.createdAt() != null && resume.createdAt() == s) {
+                    return resume;
+                }
+            }
+        } catch (NumberFormatException e) {
+            return null;
+        }
+        return null;
+    }
+
+    @Override
+    public java.util.List<String> loadResumeVersions(String pk) {
+        if (pk == null || pk.isBlank()) {
+            return List.of();
+        }
+        return resumeList.stream()
+                .filter(r -> r != null && r.datiGenerali() != null && r.datiGenerali().codiceFiscale() != null && r.datiGenerali().codiceFiscale().equals(pk))
+                .map(r -> r.createdAt() == null ? null : String.valueOf(r.createdAt()))
+                .filter(java.util.Objects::nonNull)
+                .sorted(java.util.Comparator.reverseOrder())
+                .toList();
     }
 
     @Override

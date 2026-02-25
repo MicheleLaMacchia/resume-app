@@ -46,6 +46,24 @@ public class ResumeController {
         return resumeService.getResumeByPk(pk);
     }
 
+    // Return the latest resume explicitly (same as GET /{pk} but clearer for clients)
+    @GetMapping("/{pk}/latest")
+    public ResumeModels getLatestResume(@PathVariable("pk") String pk) {
+        logger.info("GET /api/resume/{}/latest", pk);
+        return resumeService.getResumeByPk(pk);
+    }
+
+    // Return list of version SKs (epoch seconds as string) for the given pk, newest first
+    @GetMapping("/{pk}/versions")
+    public ResponseEntity<java.util.List<String>> getResumeVersions(@PathVariable("pk") String pk) {
+        logger.info("GET /api/resume/{}/versions", pk);
+        var versions = resumeService.getResumeVersionsByPk(pk);
+        return ResponseEntity.ok(versions);
+    }
+
+    // The following per-card endpoints are kept for backward compatibility but commented out to reduce redundant calls from the frontend.
+    // When the dashboard loads, frontend now requests the full resume (latest) and distributes data to cards locally.
+    /*
     @GetMapping("/personal-data/{pk}")
     public DatiGenerali getPersonalData(@PathVariable("pk") String pk) {
         logger.info("GET /api/personal-data/{}", pk);
@@ -142,6 +160,6 @@ public class ResumeController {
         var item = resumeService.getFunzionaleByPkAndIndex(pk, index);
         return ResponseEntity.ok(item);
     }
-
+    */
 
 }

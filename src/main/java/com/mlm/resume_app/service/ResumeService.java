@@ -79,4 +79,10 @@ public interface ResumeService {
     ResumeModels saveResume(ResumeModels resume);
 
     List<String> getAllCodiciFiscali();
+
+    // Retrieve a specific version by pk and sk (sk is epoch seconds as string)
+    ResumeModels getResumeByPkAndSk(String pk, String sk);
+
+    // Retrieve list of version sks for a pk (newest first)
+    java.util.List<String> getResumeVersionsByPk(String pk);
 }

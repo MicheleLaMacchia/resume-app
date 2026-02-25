@@ -171,6 +171,57 @@ public class DynamoResumeDaoImpl implements ResumeDao {
     }
 
     @Override
+    public ResumeModels loadResumeByPkAndSk(String pk, String sk) {
+        if (pk == null || pk.isBlank() || sk == null || sk.isBlank()) {
+            return null;
+        }
+        try {
+            GetItemRequest req = GetItemRequest.builder()
+                    .tableName(TABLE_NAME)
+                    .key(Map.of(PK, AttributeValue.builder().s(pk).build(), SK, AttributeValue.builder().s(sk).build()))
+                    .build();
+            var resp = client.getItem(req);
+            if (resp == null || resp.item() == null || resp.item().isEmpty()) {
+                return null;
+            }
+            AttributeValue av = resp.item().get(DATA);
+            if (av == null || av.s() == null) {
+                return null;
+            }
+            return mapper.readValue(av.s(), ResumeModels.class);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to load resume by pk and sk", e);
+        }
+    }
+
+    @Override
+    public java.util.List<String> loadResumeVersions(String pk) {
+        if (pk == null || pk.isBlank()) {
+            return List.of();
+        }
+        try {
+            QueryRequest req = QueryRequest.builder()
+                    .tableName(TABLE_NAME)
+                    .keyConditionExpression(PK + " = :pk")
+                    .expressionAttributeValues(Map.of(":pk", AttributeValue.builder().s(pk).build()))
+                    .scanIndexForward(false) // newest first
+                    .projectionExpression(SK)
+                    .build();
+            QueryResponse resp = client.query(req);
+            if (resp == null || resp.items() == null) {
+                return List.of();
+            }
+            return resp.items().stream()
+                    .map(item -> item.get(SK))
+                    .filter(Objects::nonNull)
+                    .map(AttributeValue::s)
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to load resume versions for pk", e);
+        }
+    }
+
+    @Override
     public void putResume(ResumeModels resume) {
         try {
             String codiceFiscale = null;

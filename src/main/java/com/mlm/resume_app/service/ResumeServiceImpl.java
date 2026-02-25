@@ -401,4 +401,22 @@ public class ResumeServiceImpl implements ResumeService {
         logger.info("[START] getAllCodiciFiscali");
         return dao.loadAllResumePk();
     }
+
+    @Override
+    public ResumeModels getResumeByPkAndSk(String pk, String sk) {
+        logger.info("[START] getResumeByPkAndSk :: pk: {} sk: {}", pk, sk);
+        var rm = dao.loadResumeByPkAndSk(pk, sk);
+        if (rm == null) {
+            logger.warn("Resume not found for pk: {} sk: {}", pk, sk);
+            throw new ResourceNotFoundException("Resume non trovato per pk: " + pk + " e sk: " + sk);
+        }
+        return rm;
+    }
+
+    @Override
+    public java.util.List<String> getResumeVersionsByPk(String pk) {
+        logger.info("[START] getResumeVersionsByPk :: pk: {}", pk);
+        return dao.loadResumeVersions(pk);
+    }
 }
+
